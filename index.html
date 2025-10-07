@@ -21,153 +21,152 @@
         body {
             font-family: 'Lato', sans-serif;
             overflow-x: hidden;
-            background-color: #0c0a09; /* Cor de fundo principal */
+            background-color: #0c0a09;
+            --cursor-x: 50%;
+            --cursor-y: 50%;
         }
-        .font-poppins {
-            font-family: 'Poppins', sans-serif;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; height: 400px;
+            background: radial-gradient(circle at var(--cursor-x) var(--cursor-y), rgba(138, 43, 226, 0.1), transparent 40%);
+            z-index: 1;
+            pointer-events: none;
+            transition: background 0.2s ease-out;
         }
-        .font-lato {
-            font-family: 'Lato', sans-serif;
-        }
+
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-lato { font-family: 'Lato', sans-serif; }
         
+        /* Card com efeito de brilho na borda */
         .ios-card {
-            background-color: rgba(255, 255, 255, 0.08); /* Fundo semi-transparente */
-            backdrop-filter: blur(25px); /* Efeito de vidro fosco aprimorado */
-            -webkit-backdrop-filter: blur(25px);
+            background-color: rgba(16, 16, 22, 0.7);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.1, 0.7, 0.1, 1), box-shadow 0.4s cubic-bezier(0.1, 0.7, 0.1, 1);
             overflow: hidden;
+        }
+        .ios-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1px;
+            background: conic-gradient(from 180deg at 50% 50%, rgba(138, 43, 226, 0.8) 0deg, rgba(233, 30, 99, 0.8) 180deg, rgba(138, 43, 226, 0.8) 360deg);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.4s;
         }
         .ios-card:hover {
             transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px var(--purple-500);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
         }
+        .ios-card:hover::before { opacity: 1; }
         
-        /* Novas Animações */
+        /* Animações de Entrada */
         @keyframes fadeIn-stagger {
-            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .fade-in-stagger {
-            animation: fadeIn-stagger 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-        }
+        .fade-in-stagger { animation: fadeIn-stagger 1s cubic-bezier(0.1, 0.7, 0.1, 1) forwards; }
         
         @keyframes slideDown {
-            from { transform: translateY(-100%); opacity: 0; }
+            from { transform: translateY(-120%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
         }
-        .slide-down-anim {
-            animation: slideDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s forwards; /* Atraso de 0.5s */
-        }
+        .slide-down-anim { animation: slideDown 1s cubic-bezier(0.1, 0.7, 0.1, 1) 0.5s forwards; }
         
-        /* Animação para a mensagem de entrada pulsante */
-        @keyframes pulse-fade {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.02); }
+        /* Gradiente Animado para Títulos */
+        @keyframes animated-gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
-        
-        #loading-message {
-            animation: pulse-fade 2s infinite ease-in-out;
-        }
-        
-        /* Estilos do Quiz (Modo Interativo) */
-        .quiz-option {
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            position: relative;
-        }
-        .quiz-option:hover:not(.correct, .incorrect) {
-            transform: scale(1.03);
-            border-color: var(--purple-500);
-            background-color: rgba(138, 43, 226, 0.1);
-        }
-        .quiz-option.correct {
-            background-color: rgba(76, 175, 80, 0.2);
-            border-color: var(--green-500);
-            transform: scale(1.03);
-        }
-        .quiz-option.incorrect {
-            background-color: rgba(244, 67, 54, 0.2);
-            border-color: var(--red-500);
-            transform: scale(1.03);
-        }
-        
-        /* Estilos do Modal (genéricos) */
-        .modal-hidden { display: none; }
-        .modal-visible { display: flex; }
-        
-        /* Efeito de brilho para botões do Header */
-        .nav-button::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            border-radius: 9999px;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
-            transform: scale(0);
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-            opacity: 0;
-        }
-        .nav-button:hover::after {
-            transform: scale(1.5);
-            opacity: 1;
-        }
-        .nav-button:hover {
-            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        .animated-gradient-text {
+            background: linear-gradient(90deg, var(--purple-500), var(--pink-500), var(--purple-500));
+            background-size: 200% 200%;
+            animation: animated-gradient 4s ease infinite;
         }
 
-        /* Animações de transição para o Quiz */
-        .quiz-view {
-            transition: opacity 0.4s, transform 0.4s;
+        /* Loading Screen Aprimorado */
+        #loading-screen h1 {
+            animation: animated-gradient 4s ease infinite, fadeIn-stagger 1s cubic-bezier(0.1, 0.7, 0.1, 1);
         }
-        .quiz-view.hidden {
-            opacity: 0;
-            transform: scale(0.95);
-            pointer-events: none;
-            position: absolute;
+        .loader {
+            width: 80px; height: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-
-        /* Estilos específicos para o Modal de Slides */
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid var(--purple-500);
+        .loader-dot {
+            width: 12px; height: 12px;
+            background-color: var(--pink-500);
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+            animation: loader-pulse 1.4s infinite ease-in-out both;
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes loader-pulse {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+        
+        /* Estilos do Quiz */
+        .quiz-option { cursor: pointer; transition: all 0.3s cubic-bezier(0.1, 0.7, 0.1, 1); }
+        .quiz-option:hover:not(.correct, .incorrect) { transform: scale(1.03); border-color: var(--purple-500); background-color: rgba(138, 43, 226, 0.1); }
+        .quiz-option.correct { background-color: rgba(76, 175, 80, 0.2); border-color: var(--green-500); transform: scale(1.03); }
+        .quiz-option.incorrect { background-color: rgba(244, 67, 54, 0.2); border-color: var(--red-500); transform: scale(1.03); }
+        .modal-hidden { display: none; } .modal-visible { display: flex; }
+
+        /* Botões do Header Aprimorados */
+        .nav-button { overflow: hidden; }
+        .nav-button::after {
+            content: ''; position: absolute;
+            top: 50%; left: 50%;
+            width: 200%; padding-bottom: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            transition: transform 0.6s cubic-bezier(0.1, 0.7, 0.1, 1);
+        }
+        .nav-button:hover::after { transform: translate(-50%, -50%) scale(1); }
+        
+        .quiz-view { transition: opacity 0.4s, transform 0.4s; }
+        .quiz-view.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; position: absolute; }
+        .spinner { border: 4px solid rgba(255, 255, 255, 0.3); border-top: 4px solid var(--purple-500); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(3B60deg); } }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-200">
 
-    <!-- Container para o fundo 3D -->
     <div id="3d-background" class="fixed inset-0 z-0">
         <canvas id="main-3d-canvas" class="w-full h-full"></canvas>
     </div>
 
-    <!-- Tela de pré-carregamento inicial -->
-    <div id="loading-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 transition-opacity duration-1000 bg-gray-950">
-        <h1 class="text-7xl md:text-8xl font-extrabold font-poppins tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 drop-shadow-2xl mb-12">
+    <div id="loading-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 transition-opacity duration-1000 bg-black/50 backdrop-blur-md">
+        <h1 class="text-7xl md:text-8xl font-extrabold font-poppins tracking-tighter bg-clip-text text-transparent animated-gradient-text drop-shadow-2xl mb-12">
             CYBER ÉTICA
         </h1>
-        <div id="loading-message" class="text-xl md:text-2xl text-gray-300 flex items-center gap-3 p-3 rounded-full bg-gray-800/50 backdrop-blur-sm cursor-pointer border border-purple-500/50 hover:bg-gray-700/70">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
-            <span class="font-poppins font-semibold">Clique ou pressione uma tecla</span>
+        <div id="loading-message" class="flex flex-col items-center gap-6">
+            <div class="loader">
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+                <div class="loader-dot"></div>
+            </div>
+            <span class="font-poppins font-semibold text-gray-400">Pressione qualquer tecla ou clique para iniciar</span>
         </div>
     </div>
 
-    <!-- Conteúdo principal -->
     <div id="main-content" class="opacity-0 pointer-events-none transition-opacity duration-1000">
-        
-        <!-- Header com MENU REFINADO -->
         <header id="main-header" class="sticky top-0 z-50 py-4 px-4 bg-gray-950/70 backdrop-blur-xl border-b border-gray-800/50 shadow-lg opacity-0">
             <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
-                <h1 class="text-3xl sm:text-4xl font-extrabold font-poppins tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 drop-shadow-lg mb-4 sm:mb-0">Bioética & Clonagem</h1>
-                
+                <h1 class="text-3xl sm:text-4xl font-extrabold font-poppins tracking-wide bg-clip-text text-transparent animated-gradient-text drop-shadow-lg mb-4 sm:mb-0">
+                    Bioética & Clonagem
+                </h1>
                 <nav class="flex items-center space-x-2 p-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
                     <a href="#intro" class="nav-button group relative flex items-center justify-center gap-2 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110"><circle cx="12" cy="12" r="10"/><path d="m14.31 8.69 1.4-1.4a2 2 0 0 1 2.83 0l1.4 1.4a2 2 0 0 1 0 2.83l-1.4 1.4M8.69 14.31l-1.4 1.4a2 2 0 0 1-2.83 0l-1.4-1.4a2 2 0 0 1 0-2.83l1.4-1.4"/><line x1="12" x2="12" y1="2"/><line x1="12" x2="12" y1="22"/><line x1="2" x2="12" y1="12"/><line x1="22" x2="12" y1="12"/></svg>
@@ -192,68 +191,72 @@
             </div>
         </header>
 
-        <!-- Modal de Configurações (Mantido) -->
         <div id="settings-modal" class="fixed inset-0 z-[60] hidden justify-center items-center bg-black/80 backdrop-blur-md">
             <div class="ios-card rounded-3xl p-8 shadow-2xl w-full max-w-lg mx-4">
                 <h2 class="text-2xl font-bold font-poppins text-white mb-4">Configurações</h2>
-                <p class="text-gray-400 mb-6 font-lato">As animações 3D estão pré-definidas para funcionar offline.</p>
                 <div id="display-mode" class="space-y-6 bg-gray-800 p-6 rounded-2xl">
                     <h3 class="text-xl font-semibold font-poppins text-white mb-3">Modo de Exibição</h3>
-                    <button id="fullscreen-button" onclick="toggleFullscreen()" class="w-full px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors duration-200">
-                        Entrar em Tela Cheia
-                    </button>
+                    <button id="fullscreen-button" onclick="toggleFullscreen()" class="w-full px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors duration-200">Entrar em Tela Cheia</button>
                 </div>
-                <button onclick="document.getElementById('settings-modal').style.display='none';" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-800 transition-colors duration-200 mt-8">
-                    Fechar
-                </button>
+                <button onclick="document.getElementById('settings-modal').style.display='none';" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-800 transition-colors duration-200 mt-8">Fechar</button>
             </div>
         </div>
 
-        <!-- Conteúdo principal -->
         <main class="container mx-auto p-6 md:p-8 space-y-24 relative z-10">
-            <!-- Seções com animação escalonada -->
             <section id="intro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.2s;">
-                <h2 class="text-4xl font-bold font-poppins text-white mb-4 drop-shadow-md">A Introdução à Bioética</h2>
-                <p class="text-gray-300 leading-relaxed text-lg font-lato">A **bioética** é o estudo sistemático das dimensões morais e das decisões relacionadas à vida. Em sua essência, ela explora os dilemas éticos que surgem com os avanços da ciência e da tecnologia, especialmente na medicina e biologia.</p>
+                <h2 class="text-4xl font-bold font-poppins text-white mb-4 drop-shadow-md flex items-center gap-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400"><path d="M12 2a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3a3 3 0 0 0 3-3V5a3 3 0 0 0-3-3Z"/><path d="M6.5 8.5a3 3 0 0 0 0 7"/><path d="M17.5 8.5a3 3 0 0 1 0 7"/></svg>
+                    <span>O que é Bioética?</span>
+                </h2>
+                <p class="text-gray-300 leading-relaxed text-lg font-lato">A **bioética** é o campo de estudo que analisa as implicações morais dos avanços na biologia e medicina. Ela nos fornece as ferramentas para navegar os complexos dilemas éticos apresentados por tecnologias como a engenharia genética e a clonagem.</p>
             </section>
 
             <section id="clonagem" class="fade-in-stagger opacity-0" style="animation-delay: 0.4s;">
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="ios-card rounded-3xl p-8 shadow-2xl">
-                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">O que é Clonagem?</h3>
-                        <p class="text-gray-300 leading-relaxed font-lato">**Clonagem** refere-se à criação de uma cópia geneticamente idêntica de um ser vivo. Este processo pode ocorrer naturalmente, como em bactérias e plantas, ou ser induzido em laboratório, como a famosa Ovelha Dolly.</p>
+                        <h3 class="text-2xl font-bold font-poppins text-white mb-4 flex items-center gap-3">
+                           <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400"><path d="M20.34 10.66 16 6l-4.12 4.12a2 2 0 0 0 0 2.83L16 17l4.34-4.34a2 2 0 0 0 0-2.83Z"/><path d="m3.66 13.34 4.12-4.12a2 2 0 0 0 0-2.83L4 2 2 4l4.12 4.12a2 2 0 0 0 0 2.83L2 15l1.66 1.66Z"/><path d="M18 8 6 20"/><path d="m2 6 12 12"/></svg>
+                           <span>Decodificando a Clonagem</span>
+                        </h3>
+                        <p class="text-gray-300 leading-relaxed font-lato">**Clonagem** é o processo de criar uma cópia geneticamente idêntica de um organismo. Embora ocorra na natureza, a clonagem em laboratório abre portas para debates profundos sobre identidade e o propósito da vida.</p>
                     </div>
                     <div class="ios-card rounded-3xl p-8 shadow-2xl">
-                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">Tipos de Clonagem</h3>
+                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">As Duas Faces da Clonagem</h3>
                         <ul class="list-disc list-inside space-y-2 text-gray-300 leading-relaxed font-lato">
-                            <li><strong class="text-white">Clonagem Terapêutica:</strong> Criação de embriões para obtenção de células-tronco.</li>
-                            <li><strong class="text-white">Clonagem Reprodutiva:</strong> Produção de um organismo completo.</li>
+                            <li><strong class="text-white">Clonagem Terapêutica:</strong> Focada em criar células-tronco para curar doenças, oferecendo esperança para milhões.</li>
+                            <li><strong class="text-white">Clonagem Reprodutiva:</strong> Visa criar um novo ser, levantando questões éticas sobre a singularidade e a instrumentalização da vida.</li>
                         </ul>
                     </div>
                 </div>
             </section>
             
             <section id="questoes-eticas" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.6s;">
-                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">Questões Éticas e Filosóficas</h2>
+                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md flex items-center gap-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400"><path d="m16 16-4-4-4 4"/><path d="M20 7h-5"/><path d="m9 7-5 0"/><path d="M12 3v18"/><path d="M3 7a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2"/><path d="M7 21a2 2 0 0 0-2-2H3a2 2 0 0 0-2 2v1a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-1Z"/><path d="M17 21a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2v1a2 2 0 0 0-2 2h-2a2 2 0 0 0-2-2v-1Z"/></svg>
+                    <span>Os Grandes Dilemas Éticos</span>
+                </h2>
                 <div class="grid md:grid-cols-3 gap-6">
-                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
-                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Dignidade Humana</h4>
-                        <p class="text-gray-400 font-lato">A clonagem diminui o valor da vida humana?</p>
+                    <div class="bg-gray-800/50 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200 border border-gray-700">
+                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Dignidade</h4>
+                        <p class="text-gray-400 font-lato">A clonagem redefine o valor intrínseco da vida?</p>
                     </div>
-                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
+                    <div class="bg-gray-800/50 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200 border border-gray-700">
                         <h4 class="text-xl font-semibold font-poppins text-white mb-2">Identidade</h4>
-                        <p class="text-gray-400 font-lato">A clonagem prejudica a unicidade de um indivíduo?</p>
+                        <p class="text-gray-400 font-lato">Um clone teria sua própria identidade e liberdade?</p>
                     </div>
-                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
-                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Uso Indevido</h4>
-                        <p class="text-gray-400 font-lato">Risco de clonagem para fins utilitários?</p>
+                    <div class="bg-gray-800/50 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200 border border-gray-700">
+                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Propósito</h4>
+                        <p class="text-gray-400 font-lato">Corremos o risco de criar vida com fins puramente utilitários?</p>
                     </div>
                 </div>
             </section>
 
             <section id="futuro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.8s;">
-                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">O Futuro da Bioética</h2>
-                <p class="text-gray-300 leading-relaxed text-lg font-lato">Com o avanço da genética e da engenharia biológica, a **bioética** continua a ser um campo crucial para orientar a sociedade, garantindo que o progresso científico caminhe lado a lado com a responsabilidade ética.</p>
+                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md flex items-center gap-4">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.3.05-3.11S7.09 13.2 6.24 13.5c-1.33.41-1.65 1.76-1.74 3Z"/><path d="m14 6 1-4 1 4 4 1-4 1-1 4-1-4-4-1 4-1Z"/><path d="M10 18a2 2 0 1 1 4 0c0-1.1.9-2 2-2a2 2 0 1 1 4 0c0-1.1.9-2 2-2a2 2 0 1 1 4 0c0-1.1.9-2 2-2a2 2 0 1 1 4 0"/><path d="M18 22s.5-2 2-2"/><path d="m12.05 16.05.9.9c.44.44 1.16.44 1.6 0l3-3c.44-.44.44-1.16 0-1.6l-.9-.9c-.44-.44-1.16-.44-1.6 0l-3 3c-.44.44-.44 1.16 0 1.6Z"/></svg>
+                    <span>Navegando o Amanhã</span>
+                </h2>
+                <p class="text-gray-300 leading-relaxed text-lg font-lato">O futuro da humanidade está entrelaçado com o avanço tecnológico. A **bioética** não serve para frear o progresso, mas para guiá-lo com sabedoria, garantindo que nossa tecnologia reflita nossos valores mais profundos.</p>
             </section>
         </main>
         
@@ -262,414 +265,93 @@
         </footer>
     </div>
     
-    <!-- MODAL DE SLIDES (NOVA VERSÃO COM IFRAME) -->
+    <!-- MODAL DE SLIDES -->
     <div id="slides-modal" class="fixed inset-0 z-[80] modal-hidden justify-center items-center bg-black/90 backdrop-blur-xl p-4 transition-opacity duration-300">
         <div class="ios-card rounded-3xl p-6 shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col">
             <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-700 flex-shrink-0">
-                <h2 class="text-xl sm:text-2xl font-bold font-poppins text-white flex items-center gap-2">Apresentação de Slides</h2>
+                <h2 class="text-xl sm:text-2xl font-bold font-poppins text-white">Apresentação de Slides</h2>
                 <button onclick="closeSlidesModal()" class="text-gray-400 hover:text-white transition-colors duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66a8,8,0,0,1,11.32-11.32L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
                 </button>
             </div>
-            <div id="iframe-container" class="relative flex-grow bg-gray-900 rounded-2xl overflow-hidden">
-                <div id="loading-spinner" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-900/80 backdrop-blur-sm z-10">
-                    <div class="spinner"></div>
-                    <p class="mt-4 text-lg text-gray-300 font-poppins tracking-wider">Carregando...</p>
-                </div>
-                <div id="fallback-message" class="absolute inset-0 flex flex-col justify-center items-center p-8 text-center hidden">
-                    <p class="text-lg font-semibold text-red-400 mb-4">Não foi possível carregar o slide.</p>
-                    <p class="text-gray-300 mb-8 font-lato">Por favor, use o botão abaixo para abrir em uma nova aba.</p>
-                    <a href="https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-pink-600 text-white font-bold text-lg hover:bg-pink-700 transition-colors duration-300 shadow-lg">Abrir em Nova Aba</a>
-                </div>
-                <iframe id="slide-iframe" class="w-full h-full border-0 hidden" src="about:blank" allowfullscreen="true" allow="fullscreen"></iframe>
+            <div class="relative flex-grow bg-gray-900 rounded-2xl overflow-hidden">
+                <div id="loading-spinner" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-900/80 z-10"><div class="spinner"></div><p class="mt-4 text-lg font-poppins">Carregando...</p></div>
+                <div id="fallback-message" class="absolute inset-0 flex-col justify-center items-center p-8 text-center hidden"><p class="text-lg font-semibold text-red-400 mb-4">Não foi possível carregar o slide.</p><p class="text-gray-300 mb-8 font-lato">Por favor, abra em uma nova aba.</p><a href="https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view" target="_blank" class="px-6 py-3 rounded-xl bg-pink-600 text-white font-bold text-lg hover:bg-pink-700">Abrir</a></div>
+                <iframe id="slide-iframe" class="w-full h-full border-0 hidden" src="about:blank" allowfullscreen="true"></iframe>
             </div>
         </div>
     </div>
     
-    <!-- QUIZ MODAL (MODO APRESENTAÇÃO E INTERATIVO) -->
-    <div id="quiz-modal" class="fixed inset-0 z-[70] modal-hidden justify-center items-center bg-black/90 backdrop-blur-xl p-4 transition-opacity duration-300 overflow-y-auto">
+    <!-- QUIZ MODAL -->
+    <div id="quiz-modal" class="fixed inset-0 z-[70] modal-hidden justify-center items-center bg-black/90 backdrop-blur-xl p-4 overflow-y-auto">
         <div class="ios-card rounded-3xl p-8 shadow-2xl w-full max-w-4xl mx-auto my-auto min-h-[80vh] flex flex-col">
             <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6 flex-shrink-0">
-                <h2 id="quiz-main-title" class="text-3xl sm:text-4xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 drop-shadow-md">Quiz</h2>
-                <button onclick="closeQuizModal()" class="text-gray-400 hover:text-white transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-8 h-8"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66a8,8,0,0,1,11.32-11.32L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
-                </button>
+                <h2 class="text-3xl sm:text-4xl font-bold font-poppins bg-clip-text text-transparent animated-gradient-text">Quiz</h2>
+                <button onclick="closeQuizModal()" class="text-gray-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-8 h-8"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66a8,8,0,0,1,11.32-11.32L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg></button>
             </div>
             <div id="quiz-content-area" class="flex-grow overflow-hidden flex flex-col relative">
-                <div id="mode-selection" class="quiz-view">
-                    <p class="text-lg text-gray-300 font-lato mb-4">Escolha o formato do Quiz:</p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="selectMode('interactive')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">Quiz Interativo</button>
-                        <button onclick="selectMode('presentation')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">Modo Apresentação</button>
-                    </div>
-                </div>
-                <div id="topic-selection" class="quiz-view hidden">
-                    <p class="text-lg text-gray-300 font-lato mb-4">Escolha o tópico:</p>
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="startQuiz('bioetica')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">Bioética</button>
-                        <button onclick="startQuiz('clonagem')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">Clonagem</button>
-                    </div>
-                </div>
-                <div id="quiz-display-area" class="quiz-view hidden flex-grow overflow-y-auto pr-4">
-                    <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-950/80 backdrop-blur-sm py-2 z-10">
-                        <h3 id="quiz-topic-title-display" class="text-2xl font-bold font-poppins text-white"></h3>
-                        <button id="reveal-answers-button" onclick="revealAnswers()" class="px-4 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors duration-300">Revelar Respostas</button>
-                    </div>
-                    <div id="questions-list" class="space-y-8"></div>
-                </div>
-                <div id="quiz-interactive-area" class="quiz-view hidden">
-                    <h3 id="quiz-topic-title-interactive" class="text-2xl font-bold font-poppins text-white mb-6"></h3>
-                    <div class="bg-gray-800 p-6 rounded-2xl shadow-inner mb-6">
-                        <p id="question-text" class="text-xl font-semibold text-white mb-4"></p>
-                    </div>
-                    <div id="options-container" class="space-y-3"></div>
-                    <div class="mt-8 pt-4 border-t border-gray-700">
-                        <div id="feedback-message" class="text-lg font-bold min-h-[3rem] flex flex-col gap-2 items-start justify-center"></div>
-                        <div class="flex justify-end mt-4">
-                            <button id="next-button" onclick="nextQuestion()" class="px-6 py-3 rounded-full bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>Próxima Pergunta</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="result-area" class="quiz-view hidden text-center p-8">
-                    <h3 class="text-4xl font-extrabold font-poppins text-white mb-4">Resultado Final</h3>
-                    <p id="result-score" class="text-6xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-purple-400 mb-6"></p>
-                    <p class="text-lg text-gray-300 font-lato mb-8">Parabéns por completar o quiz!</p>
-                    <button onclick="resetQuiz()" class="px-6 py-3 rounded-full bg-pink-600 text-white font-semibold hover:bg-pink-700 transition-colors duration-300">Fazer Outro Quiz</button>
-                </div>
+                <div id="mode-selection" class="quiz-view"><p class="text-lg mb-4">Escolha o formato:</p><div class="flex flex-col sm:flex-row gap-4"><button onclick="selectMode('interactive')" class="ios-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50">Quiz Interativo</button><button onclick="selectMode('presentation')" class="ios-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50">Modo Apresentação</button></div></div>
+                <div id="topic-selection" class="quiz-view hidden"><p class="text-lg mb-4">Escolha o tópico:</p><div class="flex flex-col sm:flex-row gap-4"><button onclick="startQuiz('bioetica')" class="ios-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50">Bioética</button><button onclick="startQuiz('clonagem')" class="ios-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50">Clonagem</button></div></div>
+                <div id="quiz-display-area" class="quiz-view hidden flex-grow overflow-y-auto pr-4"><div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-950/80 backdrop-blur-sm py-2 z-10"><h3 id="quiz-topic-title-display" class="text-2xl font-bold"></h3><button id="reveal-answers-button" onclick="revealAnswers()" class="px-4 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700">Revelar Respostas</button></div><div id="questions-list" class="space-y-8"></div></div>
+                <div id="quiz-interactive-area" class="quiz-view hidden"><h3 id="quiz-topic-title-interactive" class="text-2xl font-bold mb-6"></h3><div class="bg-gray-800 p-6 rounded-2xl mb-6"><p id="question-text" class="text-xl font-semibold"></p></div><div id="options-container" class="space-y-3"></div><div class="mt-8 pt-4 border-t border-gray-700"><div id="feedback-message" class="min-h-[3rem] flex flex-col gap-2"></div><div class="flex justify-end mt-4"><button id="next-button" onclick="nextQuestion()" class="px-6 py-3 rounded-full bg-gray-700 font-semibold opacity-50 cursor-not-allowed" disabled>Próxima</button></div></div></div>
+                <div id="result-area" class="quiz-view hidden text-center p-8"><h3 class="text-4xl font-extrabold mb-4">Resultado Final</h3><p id="result-score" class="text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-purple-400 mb-6"></p><p class="text-lg mb-8">Parabéns por completar o quiz!</p><button onclick="resetQuiz()" class="px-6 py-3 rounded-full bg-pink-600 font-semibold hover:bg-pink-700">Fazer Outro Quiz</button></div>
             </div>
-            <div class="pt-4 mt-auto flex-shrink-0">
-                 <button id="quiz-back-button" onclick="goBack()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200 hidden">Voltar</button>
-                 <button id="quiz-close-button" onclick="closeQuizModal()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200">Sair do Quiz</button>
-            </div>
+            <div class="pt-4 mt-auto flex-shrink-0"><button id="quiz-back-button" onclick="goBack()" class="w-full px-4 py-3 rounded-lg bg-gray-700 font-semibold hover:bg-gray-600 hidden">Voltar</button><button id="quiz-close-button" onclick="closeQuizModal()" class="w-full px-4 py-3 rounded-lg bg-gray-700 font-semibold hover:bg-gray-600">Sair</button></div>
         </div>
     </div>
     
     <script type="module">
-        // --- Estrutura de Dados do Quiz ---
-        const quizQuestions = {
-            bioetica: [
-                {
-                    q: "Qual dos seguintes conjuntos representa os quatro pilares do Principialismo na Bioética (o referencial mais comum para decisões médicas)?",
-                    options: [
-                        { text: "Dignidade, Liberdade, Igualdade, Fraternidade.", correct: false, reasoning: "Estes são princípios sociais, não os quatro pilares éticos centrais do Principialismo." },
-                        { text: "Autonomia, Beneficência, Não Maleficência, Justiça.", correct: true, reasoning: "Estes são os quatro princípios fundamentais que guiam a tomada de decisão bioética em ambientes clínicos." },
-                        { text: "Utilidade, Consentimento, Segredo, Competência.", correct: false, reasoning: "Estes são conceitos importantes, mas não constituem os quatro pilares básicos do Principialismo." }
-                    ]
-                },
-                {
-                    q: "Em relação à eutanásia em casos terminais, qual argumento é frequentemente invocado pela Bioética a favor da prática?",
-                    options: [
-                        { text: "O princípio da Beneficência, que exige a preservação da vida a qualquer custo.", correct: false, reasoning: "A beneficência busca o bem, mas a autonomia do paciente tem peso superior em decisões de fim de vida." },
-                        { text: "O princípio da Não Maleficência, argumentando que a morte é sempre um dano.", correct: false, reasoning: "Embora importante, em casos de sofrimento extremo, a Não Maleficência pode ser interpretada como 'não prolongar o dano'." },
-                        { text: "O princípio da Autonomia, que defende o direito do paciente de decidir sobre o fim de seu sofrimento.", correct: true, reasoning: "A autonomia é crucial. Defende o direito do paciente capaz de decidir sobre tratamentos e, em algumas jurisdições, sobre o fim da própria vida." }
-                    ]
-                },
-                {
-                    q: "Qual é o principal dilema ético na pesquisa com células-tronco embrionárias, de acordo com a Bioética?",
-                    options: [
-                        { text: "A dificuldade técnica de isolar as células.", correct: false, reasoning: "É um desafio prático, não um dilema ético." },
-                        { text: "O uso e a destruição potencial de embriões humanos, que alguns consideram vida.", correct: true, reasoning: "O debate central é o estatuto moral do embrião humano e a sua potencial destruição para fins terapêuticos." },
-                        { text: "A proibição de patentear as linhagens celulares resultantes.", correct: false, reasoning: "É uma questão legal e econômica, não o dilema ético principal." }
-                    ]
-                },
-                {
-                    q: "A manipulação genética de linhagem germinativa (alteração do DNA que pode ser herdada) levanta a preocupação ética de:",
-                    options: [
-                        { text: "Atrasar a descoberta de novos antibióticos.", correct: false, reasoning: "Não há relação direta entre a manipulação germinativa e a pesquisa de antibióticos." },
-                        { text: "Abrir caminho para a eugenia e a criação de 'bebês sob encomenda' (designer babies).", correct: true, reasoning: "A preocupação é com a seleção de características e a transmissão dessas alterações para as futuras gerações." },
-                        { text: "Violar o princípio da Beneficência ao curar doenças.", correct: false, reasoning: "Curar doenças seria uma forma de beneficência, o dilema está nos meios e nas implicações sociais." }
-                    ]
-                }
-            ],
-            clonagem: [
-                {
-                    q: "Qual a principal diferença de objetivo entre a Clonagem Terapêutica e a Clonagem Reprodutiva?",
-                    options: [
-                        { text: "A terapêutica usa embriões, a reprodutiva usa apenas células adultas.", correct: false, reasoning: "Ambas podem usar células adultas (SCNT), mas o objetivo é o que as diferencia." },
-                        { text: "A terapêutica visa a criação de células/tecidos, a reprodutiva visa a criação de um organismo completo.", correct: true, reasoning: "Clonagem Terapêutica cria tecidos para tratamento; Reprodutiva cria um novo ser vivo completo." },
-                        { text: "A terapêutica é legal em todos os países, a reprodutiva é ilegal em todos.", correct: false, reasoning: "A legalidade varia por país; o foco da diferença é o objetivo biológico." }
-                    ]
-                },
-                {
-                    q: "Qual é a implicação ética e social mais citada contra a permissão da clonagem de seres humanos?",
-                    options: [
-                        { text: "O alto consumo de energia dos equipamentos de laboratório.", correct: false, reasoning: "Esta é uma preocupação de custo, não a principal preocupação ética e social." },
-                        { text: "A violação da unicidade e dignidade do ser humano clonado e a potencial instrumentalização da vida.", correct: true, reasoning: "O principal temor é a transformação da vida humana em um objeto 'fabricado' ou a perda de singularidade." },
-                        { text: "A dificuldade de encontrar mães de aluguel dispostas a participar.", correct: false, reasoning: "Embora seja uma questão prática, não é a principal objeção ética." }
-                    ]
-                },
-                {
-                    q: "Um risco biológico chave associado à clonagem de animais é:",
-                    options: [
-                        { text: "A inabilidade do clone de se reproduzir.", correct: false, reasoning: "A fertilidade não é o principal risco biológico imediato." },
-                        { text: "A alta taxa de insucesso gestacional e a baixa expectativa de vida dos clones resultantes.", correct: true, reasoning: "O SCNT (Transferência Nuclear de Células Somáticas) ainda resulta em altas taxas de anomalias, abortos e saúde frágil." },
-                        { text: "A perda de pelos ou penas após o nascimento.", correct: false, reasoning: "Não é um risco biológico comum ou grave." }
-                    ]
-                },
-                {
-                    q: "A clonagem de órgãos humanos (como parte da Clonagem Terapêutica) para transplantes resolveria qual problema ético/prático do sistema atual?",
-                    options: [
-                        { text: "O custo elevado dos medicamentos pós-transplante.", correct: false, reasoning: "O custo não seria resolvido; a questão é biológica." },
-                        { text: "A escassez de doadores compatíveis e a necessidade de imunossupressão.", correct: true, reasoning: "O órgão clonado seria geneticamente idêntico ao paciente, eliminando a rejeição e a necessidade de imunossupressores." },
-                        { text: "O tempo de espera para a realização da cirurgia.", correct: false, reasoning: "O tempo de espera para o *crescimento* do órgão ainda seria um fator limitante." }
-                    ]
-                }
-            ]
-        };
-
-        // --- Variáveis e Funções para o Modal de SLIDES ---
-        const slidesModal = document.getElementById('slides-modal');
-        const slideIframe = document.getElementById('slide-iframe');
-        const loadingSpinner = document.getElementById('loading-spinner');
-        const fallbackMessage = document.getElementById('fallback-message');
-        const SLIDES_EMBED_URL = "https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view?embed";
-
-        window.openSlidesModal = () => {
-            slidesModal.classList.remove('modal-hidden');
-            slidesModal.classList.add('modal-visible');
-            loadingSpinner.style.display = 'flex';
-            slideIframe.style.display = 'none';
-            fallbackMessage.style.display = 'none';
-            slideIframe.src = 'about:blank';
-            let iframeLoaded = false;
-            slideIframe.onload = () => {
-                iframeLoaded = true;
-                loadingSpinner.style.display = 'none';
-                slideIframe.style.display = 'block';
-            };
-            slideIframe.src = SLIDES_EMBED_URL;
-            setTimeout(() => {
-                if (!iframeLoaded) {
-                    loadingSpinner.style.display = 'none';
-                    fallbackMessage.style.display = 'flex';
-                }
-            }, 5000);
-        };
-
-        window.closeSlidesModal = () => {
-            slideIframe.src = 'about:blank';
-            slidesModal.classList.remove('modal-visible');
-            slidesModal.classList.add('modal-hidden');
-        };
-
-        // --- Gerenciamento do Quiz ---
-        const quizModal = document.getElementById('quiz-modal');
-        const quizViews = document.querySelectorAll('.quiz-view');
-        const quizBackButton = document.getElementById('quiz-back-button');
-        const quizCloseButton = document.getElementById('quiz-close-button');
+        const quizQuestions={bioetica:[{q:"Qual dos seguintes conjuntos representa os quatro pilares do Principialismo na Bioética (o referencial mais comum para decisões médicas)?",options:[{text:"Dignidade, Liberdade, Igualdade, Fraternidade.",correct:!1,reasoning:"Estes são princípios sociais, não os quatro pilares éticos centrais do Principialismo."},{text:"Autonomia, Beneficência, Não Maleficência, Justiça.",correct:!0,reasoning:"Estes são os quatro princípios fundamentais que guiam a tomada de decisão bioética em ambientes clínicos."},{text:"Utilidade, Consentimento, Segredo, Competência.",correct:!1,reasoning:"Estes são conceitos importantes, mas não constituem os quatro pilares básicos do Principialismo."}]},{q:"Em relação à eutanásia em casos terminais, qual argumento é frequentemente invocado pela Bioética a favor da prática?",options:[{text:"O princípio da Beneficência, que exige a preservação da vida a qualquer custo.",correct:!1,reasoning:"A beneficência busca o bem, mas a autonomia do paciente tem peso superior em decisões de fim de vida."},{text:"O princípio da Não Maleficência, argumentando que a morte é sempre um dano.",correct:!1,reasoning:"Embora importante, em casos de sofrimento extremo, a Não Maleficência pode ser interpretada como 'não prolongar o dano'."},{text:"O princípio da Autonomia, que defende o direito do paciente de decidir sobre o fim de seu sofrimento.",correct:!0,reasoning:"A autonomia é crucial. Defende o direito do paciente capaz de decidir sobre tratamentos e, em algumas jurisdições, sobre o fim da própria vida."}]},{q:"Qual é o principal dilema ético na pesquisa com células-tronco embrionárias, de acordo com a Bioética?",options:[{text:"A dificuldade técnica de isolar as células.",correct:!1,reasoning:"É um desafio prático, não um dilema ético."},{text:"O uso e a destruição potencial de embriões humanos, que alguns consideram vida.",correct:!0,reasoning:"O debate central é o estatuto moral do embrião humano e a sua potencial destruição para fins terapêuticos."},{text:"A proibição de patentear as linhagens celulares resultantes.",correct:!1,reasoning:"É uma questão legal e econômica, não o dilema ético principal."}]},{q:"A manipulação genética de linhagem germinativa (alteração do DNA que pode ser herdada) levanta a preocupação ética de:",options:[{text:"Atrasar a descoberta de novos antibióticos.",correct:!1,reasoning:"Não há relação direta entre a manipulação germinativa e a pesquisa de antibióticos."},{text:"Abrir caminho para a eugenia e a criação de 'bebês sob encomenda' (designer babies).",correct:!0,reasoning:"A preocupação é com a seleção de características e a transmissão dessas alterações para as futuras gerações."},{text:"Violar o princípio da Beneficência ao curar doenças.",correct:!1,reasoning:"Curar doenças seria uma forma de beneficência, o dilema está nos meios e nas implicações sociais."}]}],clonagem:[{q:"Qual a principal diferença de objetivo entre a Clonagem Terapêutica e a Clonagem Reprodutiva?",options:[{text:"A terapêutica usa embriões, a reprodutiva usa apenas células adultas.",correct:!1,reasoning:"Ambas podem usar células adultas (SCNT), mas o objetivo é o que as diferencia."},{text:"A terapêutica visa a criação de células/tecidos, a reprodutiva visa a criação de um organismo completo.",correct:!0,reasoning:"Clonagem Terapêutica cria tecidos para tratamento; Reprodutiva cria um novo ser vivo completo."},{text:"A terapêutica é legal em todos os países, a reprodutiva é ilegal em todos.",correct:!1,reasoning:"A legalidade varia por país; o foco da diferença é o objetivo biológico."}]},{q:"Qual é a implicação ética e social mais citada contra a permissão da clonagem de seres humanos?",options:[{text:"O alto consumo de energia dos equipamentos de laboratório.",correct:!1,reasoning:"Esta é uma preocupação de custo, não a principal preocupação ética e social."},{text:"A violação da unicidade e dignidade do ser humano clonado e a potencial instrumentalização da vida.",correct:!0,reasoning:"O principal temor é a transformação da vida humana em um objeto 'fabricado' ou a perda de singularidade."},{text:"A dificuldade de encontrar mães de aluguel dispostas a participar.",correct:!1,reasoning:"Embora seja uma questão prática, não é a principal objeção ética."}]},{q:"Um risco biológico chave associado à clonagem de animais é:",options:[{text:"A inabilidade do clone de se reproduzir.",correct:!1,reasoning:"A fertilidade não é o principal risco biológico imediato."},{text:"A alta taxa de insucesso gestacional e a baixa expectativa de vida dos clones resultantes.",correct:!0,reasoning:"O SCNT (Transferência Nuclear de Células Somáticas) ainda resulta em altas taxas de anomalias, abortos e saúde frágil."},{text:"A perda de pelos ou penas após o nascimento.",correct:!1,reasoning:"Não é um risco biológico comum ou grave."}]},{q:"A clonagem de órgãos humanos (como parte da Clonagem Terapêutica) para transplantes resolveria qual problema ético/prático do sistema atual?",options:[{text:"O custo elevado dos medicamentos pós-transplante.",correct:!1,reasoning:"O custo não seria resolvido; a questão é biológica."},{text:"A escassez de doadores compatíveis e a necessidade de imunossupressão.",correct:!0,reasoning:"O órgão clonado seria geneticamente idêntico ao paciente, eliminando a rejeição e a necessidade de imunossupressores."},{text:"O tempo de espera para a realização da cirurgia.",correct:!1,reasoning:"O tempo de espera para o *crescimento* do órgão ainda seria um fator limitante."}]}]};
         
-        let quizMode = '';
-        let currentTopic = '';
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let isAnswered = false;
-        let quizState = 'mode';
-
-        function updateQuizView() {
-            quizViews.forEach(view => view.classList.add('hidden'));
-
-            if (quizState === 'mode') {
-                document.getElementById('mode-selection').classList.remove('hidden');
-                quizBackButton.classList.add('hidden');
-                quizCloseButton.classList.remove('hidden');
-            } else if (quizState === 'topic') {
-                document.getElementById('topic-selection').classList.remove('hidden');
-                quizBackButton.classList.remove('hidden');
-                quizCloseButton.classList.add('hidden');
-            } else if (quizState === 'active') {
-                quizBackButton.classList.remove('hidden');
-                quizCloseButton.classList.add('hidden');
-                if (quizMode === 'interactive') {
-                    if (currentQuestionIndex < quizQuestions[currentTopic].length) {
-                        document.getElementById('quiz-interactive-area').classList.remove('hidden');
-                    } else {
-                        document.getElementById('result-area').classList.remove('hidden');
-                    }
-                } else {
-                    document.getElementById('quiz-display-area').classList.remove('hidden');
-                }
-            }
-        }
+        const SLIDES_EMBED_URL="https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view?embed";
+        let quizMode="",currentTopic="",currentQuestionIndex=0,score=0,isAnswered=!1,quizState="mode";
         
-        window.openQuizModal = () => { quizModal.classList.remove('modal-hidden'); quizModal.classList.add('modal-visible'); resetQuiz(); };
-        window.closeQuizModal = () => { quizModal.classList.remove('modal-visible'); quizModal.classList.add('modal-hidden'); };
-        window.selectMode = (mode) => { quizMode = mode; quizState = 'topic'; updateQuizView(); };
-        window.startQuiz = (topic) => {
-            currentTopic = topic;
-            quizState = 'active';
-            if (quizMode === 'interactive') { currentQuestionIndex = 0; score = 0; loadInteractiveQuestion(); } 
-            else { loadPresentationQuiz(); }
-            updateQuizView();
-        };
-        window.resetQuiz = () => { quizState = 'mode'; quizMode = ''; currentTopic = ''; updateQuizView(); };
-        window.goBack = () => {
-            if (quizState === 'active') { quizState = 'topic'; } 
-            else if (quizState === 'topic') { quizState = 'mode'; }
-            updateQuizView();
-        };
+        window.openSlidesModal=()=>{const e=document.getElementById("slides-modal"),t=document.getElementById("slide-iframe"),i=document.getElementById("loading-spinner"),o=document.getElementById("fallback-message");e.classList.remove("modal-hidden"),e.classList.add("modal-visible"),i.style.display="flex",t.style.display="none",o.style.display="none",t.src="about:blank";let n=!1;t.onload=()=>{n=!0,i.style.display="none",t.style.display="block"},t.src=SLIDES_EMBED_URL,setTimeout(()=>{n||(i.style.display="none",o.style.display="flex")},5e3)};
+        window.closeSlidesModal=()=>{document.getElementById("slide-iframe").src="about:blank",document.getElementById("slides-modal").classList.add("modal-hidden")};
+        
+        function updateQuizView(){document.querySelectorAll(".quiz-view").forEach(e=>e.classList.add("hidden"));const e=document.getElementById("quiz-back-button"),t=document.getElementById("quiz-close-button");"mode"===quizState?(document.getElementById("mode-selection").classList.remove("hidden"),e.classList.add("hidden"),t.classList.remove("hidden")):"topic"===quizState?(document.getElementById("topic-selection").classList.remove("hidden"),e.classList.remove("hidden"),t.classList.add("hidden")):"active"===quizState&&(e.classList.remove("hidden"),t.classList.add("hidden"),"interactive"===quizMode?currentQuestionIndex<quizQuestions[currentTopic].length?document.getElementById("quiz-interactive-area").classList.remove("hidden"):document.getElementById("result-area").classList.remove("hidden"):document.getElementById("quiz-display-area").classList.remove("hidden"))}
+        window.openQuizModal=()=>{document.getElementById("quiz-modal").classList.remove("modal-hidden"),resetQuiz()},window.closeQuizModal=()=>document.getElementById("quiz-modal").classList.add("modal-hidden"),window.selectMode=e=>{quizMode=e,quizState="topic",updateQuizView()},window.startQuiz=e=>{currentTopic=e,quizState="active","interactive"===quizMode?(currentQuestionIndex=0,score=0,loadInteractiveQuestion()):loadPresentationQuiz(),updateQuizView()},window.resetQuiz=()=>{quizState="mode",quizMode="",currentTopic="",updateQuizView()},window.goBack=()=>{quizState="active"?quizState="topic":"topic"===quizState&&(quizState="mode"),updateQuizView()};
+        
+        function loadPresentationQuiz(){const e=document.getElementById("quiz-topic-title-display"),t=document.getElementById("questions-list"),i=document.getElementById("reveal-answers-button");e.textContent="bioetica"===currentTopic?"Tópico: Bioética":"Tópico: Clonagem",t.innerHTML="",i.style.display="block",quizQuestions[currentTopic].forEach((e,i)=>{const o=document.createElement("div");o.className="bg-gray-800/50 p-6 rounded-2xl",o.innerHTML=`<p class="text-xl font-semibold mb-4"><span class="text-purple-400 font-bold">Q${i+1}:</span> ${e.q}</p><div class="space-y-3">${e.options.map((e,t)=>`<div class="presentation-option p-3 rounded-lg border-2 border-gray-700" data-correct="${e.correct}"><span class="font-bold text-lg text-pink-400">${String.fromCharCode(65+t)})</span> ${e.text}</div>`).join("")}</div>`,t.appendChild(o)})}
+        window.revealAnswers=()=>{document.querySelectorAll('.presentation-option[data-correct="true"]').forEach(e=>{e.classList.add("border-green-500/50","bg-green-500/10"),e.innerHTML+='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5 text-green-400 ml-auto"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg>'}),document.getElementById("reveal-answers-button").style.display="none"};
+        
+        function loadInteractiveQuestion(){const e=quizQuestions[currentTopic];if(currentQuestionIndex>=e.length)return void showResults();isAnswered=!1;const t=document.getElementById("next-button");t.disabled=!0,t.classList.add("opacity-50","cursor-not-allowed"),t.classList.remove("bg-purple-600","hover:bg-purple-700"),document.getElementById("feedback-message").innerHTML="";const i=document.getElementById("options-container");i.innerHTML="";const o=e[currentQuestionIndex];document.getElementById("quiz-topic-title-interactive").textContent=`${"bioetica"===currentTopic?"Bioética":"Clonagem"} - Pergunta ${currentQuestionIndex+1}/${e.length}`,document.getElementById("question-text").textContent=o.q,o.options.forEach((e,t)=>{const o=document.createElement("div");o.className="quiz-option p-4 rounded-xl border-2 border-gray-700 flex items-center gap-3",o.setAttribute("onclick",`checkAnswer(${t}, this)`),o.innerHTML=`<span class="font-bold text-lg text-purple-400">${String.fromCharCode(65+t)})</span> ${e.text}`,i.appendChild(o)})}
+        window.checkAnswer=(e,t)=>{if(!isAnswered){isAnswered=!0;const i=quizQuestions[currentTopic],o=i[currentQuestionIndex],n=o.options[e],d=document.getElementById("feedback-message");Array.from(document.getElementById("options-container").children).forEach((e,t)=>{e.onclick=null,e.style.cursor="default",o.options[t].correct&&e.classList.add("correct")}),n.correct?(score++,d.innerHTML=`<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-green-500"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg><span class="text-green-500">Correta!</span></div><p class="text-sm mt-2"><span class="font-semibold text-green-400">Explicação:</span> ${n.reasoning}</p>`):(t.classList.add("incorrect"),d.innerHTML=`<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM176,176a8,8,0,0,1-11.31,0L128,141.31l-36.69,36.69a8,8,0,0,1-11.32-11.32L116.69,128,80,91.31A8,8,0,0,1,91.31,80L128,116.69,164.69,80a8,8,0,0,1,11.32,11.32L141.31,128l36.69,36.69A8,8,0,0,1,176,176Z"></path></svg><span class="text-red-500">Incorreto!</span></div><p class="text-sm mt-2"><span class="font-semibold text-red-400">Erro:</span> ${n.reasoning}</p><p class="text-sm mt-1"><span class="font-semibold text-green-400">Correto:</span> ${o.options.find(e=>e.correct).reasoning}</p>`);const c=document.getElementById("next-button");c.disabled=!1,c.classList.remove("opacity-50","cursor-not-allowed"),c.classList.add("bg-purple-600","hover:bg-purple-700")}};
+        window.nextQuestion=()=>{currentQuestionIndex++,loadInteractiveQuestion()};
+        function showResults(){const e=quizQuestions[currentTopic].length,t=Math.round(score/e*100);document.getElementById("result-score").textContent=`${score}/${e} (${t}%)`,updateQuizView()}
 
-        // --- Lógica do Modo Apresentação ---
-        function loadPresentationQuiz() {
-            const topicTitle = document.getElementById('quiz-topic-title-display');
-            const list = document.getElementById('questions-list');
-            const revealBtn = document.getElementById('reveal-answers-button');
+        window.onload=function(){
+            const e=document.getElementById("loading-screen"),t=document.getElementById("main-content"),i=document.getElementById("main-header");
+            const o=()=>{e.removeEventListener("click",o),document.removeEventListener("keydown",o),e.style.opacity="0",setTimeout(()=>{e.style.display="none",t.style.opacity="1",t.style.pointerEvents="auto",i.classList.add("slide-down-anim")},1e3)};
+            try{document.documentElement.requestFullscreen().catch(e=>{})}catch(n){}
+            e.addEventListener("click",o),document.addEventListener("keydown",o);
             
-            topicTitle.textContent = currentTopic === 'bioetica' ? 'Tópico: Bioética' : 'Tópico: Clonagem';
-            list.innerHTML = '';
-            revealBtn.style.display = 'block';
-
-            quizQuestions[currentTopic].forEach((q, index) => {
-                const qBlock = document.createElement('div');
-                qBlock.className = 'bg-gray-800/50 p-6 rounded-2xl shadow-inner';
-                qBlock.innerHTML = `<p class="text-xl font-semibold text-white mb-4"><span class="text-purple-400 font-bold">Q${index + 1}:</span> ${q.q}</p>
-                    <div class="space-y-3">${q.options.map((opt, i) => `<div class="presentation-option p-3 rounded-lg border-2 border-gray-700 text-gray-300 font-lato" data-correct="${opt.correct}"><span class="font-bold text-lg text-pink-400">${String.fromCharCode(65 + i)})</span> ${opt.text}</div>`).join('')}</div>`;
-                list.appendChild(qBlock);
-            });
-        }
-        
-        window.revealAnswers = () => {
-            document.querySelectorAll('.presentation-option[data-correct="true"]').forEach(opt => {
-                opt.classList.add('border-green-500/50', 'bg-green-500/10');
-                opt.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5 text-green-400 ml-auto"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg>`;
-            });
-            document.getElementById('reveal-answers-button').style.display = 'none';
-        };
-
-        // --- Lógica do Quiz Interativo ---
-        function loadInteractiveQuestion() {
-            const questions = quizQuestions[currentTopic];
-            if (currentQuestionIndex >= questions.length) { showResults(); return; }
-
-            isAnswered = false;
-            const nextButton = document.getElementById('next-button');
-            nextButton.disabled = true;
-            nextButton.classList.add('opacity-50', 'cursor-not-allowed');
-            nextButton.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+            const scene=new THREE.Scene,camera=new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,.1,1e3),renderer=new THREE.WebGLRenderer({canvas:document.getElementById("main-3d-canvas"),alpha:!0,antialias:!0});
+            renderer.setSize(window.innerWidth,window.innerHeight),renderer.setClearColor(0,0);
+            scene.add(new THREE.AmbientLight(0xffffff,3));
+            const light=new THREE.DirectionalLight(0xffffff,4);light.position.set(5,5,5),scene.add(light);
+            camera.position.z=6.5;
             
-            document.getElementById('feedback-message').innerHTML = '';
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
+            let models=[],currentModelIndex=0,currentModelGroup=null;
 
-            const currentQ = questions[currentQuestionIndex];
-            document.getElementById('quiz-topic-title-interactive').textContent = `${currentTopic === 'bioetica' ? 'Bioética' : 'Clonagem'} - Pergunta ${currentQuestionIndex + 1}/${questions.length}`;
-            document.getElementById('question-text').textContent = currentQ.q;
+            const createDNA=()=>{const e=new THREE.Group,t=50,i=.2,o=2,n=new THREE.SphereGeometry(.1,16,16),d=new THREE.MeshLambertMaterial({color:9109707}),c=new THREE.MeshLambertMaterial({color:15352290}),a=[4367349,16740420,6732901,16763432];for(let r=0;r<t;r++){const s=r/t*Math.PI*10,l=new THREE.Mesh(n,d),p=new THREE.Mesh(n,c);l.position.set(o*Math.cos(s),i*r-t*i/2,o*Math.sin(s)),p.position.set(o*Math.cos(s+Math.PI),i*r-t*i/2,o*Math.sin(s+Math.PI)),e.add(l),e.add(p);if(r%3==0){const u=new THREE.Mesh(new THREE.CylinderGeometry(.05,.05,2*o,.8),new THREE.MeshBasicMaterial({color:a[Math.floor(4*Math.random())]}));u.position.y=l.position.y,u.rotation.y=s,e.add(u)}}return e.update=t=>{e.rotation.y=t*.1,e.rotation.x=t*.05},e};
+            const createCell=()=>{const e=new THREE.Group,t=new THREE.MeshPhysicalMaterial({color:15352290,metalness:0,roughness:0,transmission:.95,transparent:!0,opacity:.5,ior:1.5,thickness:.5}),i=new THREE.Mesh(new THREE.SphereGeometry(2.5,32,32),t),o=new THREE.Mesh(new THREE.SphereGeometry(.5,32,32),new THREE.MeshLambertMaterial({color:15310019,emissive:9109707}));e.add(i),e.add(o);const n=[];for(let d=0;d<100;d++){const c=new THREE.Mesh(new THREE.SphereGeometry(.05,8,8),new THREE.MeshBasicMaterial({color:16777215})),a=Math.random()*Math.PI*2,r=2*Math.random()*Math.PI,s=1+1*Math.random();c.position.set(s*Math.sin(a)*Math.cos(r),s*Math.sin(a)*Math.sin(r),s*Math.cos(a)),c.userData={radius:s,angle:a,orbitSpeed:Math.random()*.02+.01,phase:r},n.push(c),e.add(c)}return e.update=t=>{n.forEach(e=>{e.userData.phase+=e.userData.orbitSpeed,e.position.x=e.userData.radius*Math.sin(e.userData.angle)*Math.cos(e.userData.phase),e.position.y=e.userData.radius*Math.sin(e.userData.angle)*Math.sin(e.userData.phase),e.position.z=e.userData.radius*Math.cos(e.userData.angle)})},e};
+            const createNeural=()=>{const e=new THREE.Group,t=[],i=[],o=100;for(let n=0;n<o;n++){const d=new THREE.Vector3(6*(Math.random()-.5),6*(Math.random()-.5),6*(Math.random()-.5)),c=new THREE.Mesh(new THREE.SphereGeometry(.1,16,16),new THREE.MeshBasicMaterial({color:9109707}));c.position.copy(d),e.add(c),t.push(c)}for(let a=0;a<o;a++){const r=Math.floor(Math.random()*o),s=new THREE.BufferGeometry().setFromPoints([t[a].position,t[r].position]),l=new THREE.Line(s,new THREE.LineBasicMaterial({color:15352290,transparent:!0,opacity:.2}));e.add(l),i.push({line:l,pulse:0})}return e.update=e=>{t.forEach((t,i)=>{t.material.color.setHSL(Math.sin(e*.5+i*.1)*.1+.5,.5,.5)}),i.forEach(t=>{t.pulse+=.05,t.line.material.opacity=.5+.5*Math.sin(t.pulse*2+e)})},e};
 
-            currentQ.options.forEach((option, index) => {
-                const optEl = document.createElement('div');
-                optEl.className = 'quiz-option p-4 rounded-xl border-2 border-gray-700 text-gray-200 font-lato flex items-center gap-3';
-                optEl.setAttribute('onclick', `checkAnswer(${index}, this)`);
-                optEl.innerHTML = `<span class="font-bold text-lg text-purple-400">${String.fromCharCode(65 + index)})</span> ${option.text}`;
-                optionsContainer.appendChild(optEl);
-            });
-        }
-        
-        window.checkAnswer = (selectedIndex, selectedElement) => {
-            if (isAnswered) return;
-            isAnswered = true;
+            function switchModel(){currentModelGroup&&scene.remove(currentModelGroup),currentModelIndex=(currentModelIndex+1)%models.length,currentModelGroup=models[currentModelIndex](),scene.add(currentModelGroup)}
+            models=[createDNA,createCell,createNeural],switchModel(),setInterval(switchModel,1e4);
 
-            const questions = quizQuestions[currentTopic];
-            const currentQ = questions[currentQuestionIndex];
-            const selectedOption = currentQ.options[selectedIndex];
-            const feedbackEl = document.getElementById('feedback-message');
-
-            Array.from(document.getElementById('options-container').children).forEach((el, index) => {
-                el.onclick = null; el.style.cursor = 'default';
-                if (currentQ.options[index].correct) el.classList.add('correct');
-            });
-
-            if (selectedOption.correct) {
-                score++;
-                feedbackEl.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-green-500"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg><span class="text-green-500 font-poppins">Resposta Correta!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-green-400">Explicação:</span> ${selectedOption.reasoning}</p>`;
-            } else {
-                selectedElement.classList.add('incorrect');
-                const correctOpt = currentQ.options.find(o => o.correct);
-                feedbackEl.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM176,176a8,8,0,0,1-11.31,0L128,141.31l-36.69,36.69a8,8,0,0,1-11.32-11.32L116.69,128,80,91.31A8,8,0,0,1,91.31,80L128,116.69,164.69,80a8,8,0,0,1,11.32,11.32L141.31,128l36.69,36.69A8,8,0,0,1,176,176Z"></path></svg><span class="text-red-500 font-poppins">Incorreto!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-red-400">Motivo do Erro:</span> ${selectedOption.reasoning}</p><p class="text-sm text-gray-300 font-lato mt-1"><span class="font-semibold text-green-400">Explicação Correta:</span> ${correctOpt.reasoning}</p>`;
-            }
-
-            const nextButton = document.getElementById('next-button');
-            nextButton.disabled = false;
-            nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            nextButton.classList.add('bg-purple-600', 'hover:bg-purple-700');
-        };
-        
-        window.nextQuestion = () => { currentQuestionIndex++; loadInteractiveQuestion(); };
-        function showResults() {
-            const total = quizQuestions[currentTopic].length;
-            const percentage = Math.round((score / total) * 100);
-            document.getElementById('result-score').textContent = `${score}/${total} (${percentage}%)`;
-            updateQuizView();
-        }
-
-        // --- Funções de Inicialização e Animação 3D ---
-        window.onload = function() {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('main-3d-canvas'), alpha: true, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0);
-
-            scene.add(new THREE.AmbientLight(0x404040, 2));
-            const light = new THREE.DirectionalLight(0xffffff, 1.5);
-            light.position.set(1, 1, 1);
-            scene.add(light);
-
-            const group = new THREE.Group();
-            const mainMat = new THREE.MeshStandardMaterial({ color: 0x8A2BE2, emissive: 0x4B0082, roughness: 0.4, metalness: 0.6, transparent: true, opacity: 0.8 });
-            const sphereGeom = new THREE.IcosahedronGeometry(2, 1);
-            group.add(new THREE.Mesh(sphereGeom, mainMat));
-            scene.add(group);
-            camera.position.z = 5;
-
-            let targetRotationX = 0, targetRotationY = 0;
-            document.addEventListener('mousemove', (e) => {
-                targetRotationY = (e.clientX / window.innerWidth) * 0.5;
-                targetRotationX = (e.clientY / window.innerHeight) * 0.5;
-            });
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
-            const animate = () => {
-                requestAnimationFrame(animate);
-                group.rotation.x += (targetRotationX - group.rotation.x) * 0.05;
-                group.rotation.y += (targetRotationY - group.rotation.y) * 0.05;
-                group.rotation.y += 0.001;
-                renderer.render(scene, camera);
-            };
+            let targetRotationX=0,targetRotationY=0;
+            document.addEventListener("mousemove",e=>{document.body.style.setProperty("--cursor-x",e.clientX+"px"),document.body.style.setProperty("--cursor-y",e.clientY+"px"),targetRotationY=.3*(e.clientX/window.innerWidth-.5),targetRotationX=.3*(e.clientY/window.innerHeight-.5)});
+            window.addEventListener("resize",()=>{camera.aspect=window.innerWidth/window.innerHeight,camera.updateProjectionMatrix(),renderer.setSize(window.innerWidth,window.innerHeight)});
+            
+            const clock=new THREE.Clock;
+            const animate=()=>{requestAnimationFrame(animate);const e=clock.getElapsedTime();currentModelGroup&&(currentModelGroup.update&&currentModelGroup.update(e),currentModelGroup.rotation.x+=.05*(targetRotationX-currentModelGroup.rotation.x),currentModelGroup.rotation.y+=.05*(targetRotationY-currentModelGroup.rotation.y)),renderer.render(scene,camera)};
             animate();
-            
-            window.toggleFullscreen = () => {
-                if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(err => console.error(err));
-                else document.exitFullscreen();
-            };
-            document.addEventListener('fullscreenchange', () => {
-                const button = document.getElementById('fullscreen-button');
-                if (button) button.textContent = document.fullscreenElement ? 'Sair da Tela Cheia' : 'Entrar em Tela Cheia';
-            });
-            
-            const loadingScreen = document.getElementById('loading-screen');
-            const mainContent = document.getElementById('main-content');
-            const mainHeader = document.getElementById('main-header');
-            
-            const handleLoad = () => {
-                document.removeEventListener('keydown', handleLoad);
-                loadingScreen.removeEventListener('click', handleLoad);
-                
-                toggleFullscreen(); // Tenta entrar em tela cheia
 
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    mainContent.style.opacity = '1';
-                    mainContent.style.pointerEvents = 'auto';
-                    mainHeader.classList.add('slide-down-anim');
-                }, 1000);
-            };
-            loadingScreen.addEventListener('click', handleLoad);
-            document.addEventListener('keydown', handleLoad);
-        };
+            window.toggleFullscreen=()=>{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen().catch(e=>console.error(e))};
+            document.addEventListener("fullscreenchange",()=>{const e=document.getElementById("fullscreen-button");e&&(e.textContent=document.fullscreenElement?"Sair da Tela Cheia":"Entrar em Tela Cheia")})
+        }
     </script>
 </body>
 </html>
