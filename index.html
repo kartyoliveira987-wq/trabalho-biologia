@@ -34,27 +34,32 @@
             background-color: rgba(255, 255, 255, 0.08); /* Fundo semi-transparente */
             backdrop-filter: blur(25px); /* Efeito de vidro fosco aprimorado */
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             position: relative;
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s, border-color 0.4s;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             overflow: hidden;
         }
         .ios-card:hover {
-            transform: translateY(-4px) scale(1.01);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 30px var(--purple-500);
         }
         
-        /* Animação para a entrada das seções */
-        .fade-in {
-            animation: fadeIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        /* Novas Animações */
+        @keyframes fadeIn-stagger {
+            from { opacity: 0; transform: translateY(30px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .fade-in-stagger {
+            animation: fadeIn-stagger 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
-
-        /* --- Melhoria do Layout Inicial --- */
+        
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .slide-down-anim {
+            animation: slideDown 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) 0.5s forwards; /* Atraso de 0.5s */
+        }
         
         /* Animação para a mensagem de entrada pulsante */
         @keyframes pulse-fade {
@@ -64,25 +69,16 @@
         
         #loading-message {
             animation: pulse-fade 2s infinite ease-in-out;
-            padding: 1rem 2rem;
-            border-radius: 9999px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        #loading-screen {
-            background-color: #0c0a09; /* Garantia de opacidade total */
         }
         
         /* Estilos do Quiz (Modo Interativo) */
         .quiz-option {
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
             position: relative;
-            transform: scale(1);
         }
         .quiz-option:hover:not(.correct, .incorrect) {
-            transform: scale(1.02);
+            transform: scale(1.03);
             border-color: var(--purple-500);
             background-color: rgba(138, 43, 226, 0.1);
         }
@@ -90,36 +86,48 @@
             background-color: rgba(76, 175, 80, 0.2);
             border-color: var(--green-500);
             transform: scale(1.03);
-            animation: correct-answer 0.5s ease-out;
         }
         .quiz-option.incorrect {
             background-color: rgba(244, 67, 54, 0.2);
             border-color: var(--red-500);
             transform: scale(1.03);
-            animation: incorrect-answer 0.5s ease-out;
-        }
-        
-        @keyframes correct-answer {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1.03); }
-        }
-        @keyframes incorrect-answer {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-5px); }
-            40%, 80% { transform: translateX(5px); }
         }
         
         /* Estilos do Modal (genéricos) */
-        .modal-hidden {
+        .modal-hidden { display: none; }
+        .modal-visible { display: flex; }
+        
+        /* Efeito de brilho para botões do Header */
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 70%);
+            transform: scale(0);
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
             opacity: 0;
-            pointer-events: none;
-            display: none;
         }
-        .modal-visible {
+        .nav-button:hover::after {
+            transform: scale(1.5);
             opacity: 1;
-            pointer-events: auto;
-            display: flex;
+        }
+        .nav-button:hover {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        /* Animações de transição para o Quiz */
+        .quiz-view {
+            transition: opacity 0.4s, transform 0.4s;
+        }
+        .quiz-view.hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+            position: absolute;
         }
 
         /* Estilos específicos para o Modal de Slides */
@@ -127,15 +135,11 @@
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid var(--purple-500);
             border-radius: 50%;
-            width: 50px; /* Aumentado */
-            height: 50px; /* Aumentado */
+            width: 50px;
+            height: 50px;
             animation: spin 1s linear infinite;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="bg-gray-950 text-gray-200">
@@ -147,58 +151,42 @@
 
     <!-- Tela de pré-carregamento inicial -->
     <div id="loading-screen" class="fixed inset-0 flex flex-col justify-center items-center z-50 transition-opacity duration-1000 bg-gray-950">
-        
-        <!-- Novo Título Principal -->
         <h1 class="text-7xl md:text-8xl font-extrabold font-poppins tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 drop-shadow-2xl mb-12">
             CYBER ÉTICA
         </h1>
-
-        <!-- Mensagem de entrada aprimorada com pulsação -->
         <div id="loading-message" class="text-xl md:text-2xl text-gray-300 flex items-center gap-3 p-3 rounded-full bg-gray-800/50 backdrop-blur-sm cursor-pointer border border-purple-500/50 hover:bg-gray-700/70">
-            <!-- Ícone de Mão/Clique -->
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-pink-400">
-                <path d="M128,144a8,8,0,0,1-8-8V80a8,8,0,0,1,16,0v56A8,8,0,0,1,128,144Zm40-8a8,8,0,0,0-16,0v40a8,8,0,0,0,16,0Zm-80,0a8,8,0,0,0-16,0v40a8,8,0,0,0,16,0ZM224,128a96,96,0,1,1-96-96A96.11,96.11,0,0,1,224,128Zm-16,0a80,80,0,1,0-80,80A80.09,80.09,0,0,0,208,128Z"></path>
-            </svg>
-            <span class="font-poppins font-semibold">Pressione qualquer tecla ou clique para iniciar</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-pink-400"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+            <span class="font-poppins font-semibold">Clique ou pressione uma tecla</span>
         </div>
     </div>
 
     <!-- Conteúdo principal -->
     <div id="main-content" class="opacity-0 pointer-events-none transition-opacity duration-1000">
         
-        <!-- Header com MENU REFINADO e efeito de vidro fosco -->
-        <header id="main-header" class="sticky top-0 z-50 py-4 px-4 bg-gray-950/70 backdrop-blur-xl border-b border-gray-800 shadow-lg relative">
+        <!-- Header com MENU REFINADO -->
+        <header id="main-header" class="sticky top-0 z-50 py-4 px-4 bg-gray-950/70 backdrop-blur-xl border-b border-gray-800/50 shadow-lg opacity-0">
             <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center">
                 <h1 class="text-3xl sm:text-4xl font-extrabold font-poppins tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 drop-shadow-lg mb-4 sm:mb-0">Bioética & Clonagem</h1>
                 
-                <!-- Menu de Navegação - Segmentado (Mais clean) -->
-                <nav class="flex items-center space-x-2 p-1 rounded-full bg-gray-800/50 border border-gray-700">
-                    
-                    <a href="#intro" class="group flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5"><path d="M240,128a15.93,15.93,0,0,1-4.66,11.31l-80,80A16,16,0,0,1,128,216a15.86,15.86,0,0,1-7.22-1.78l-80-40A16,16,0,0,1,32,160V96a16,16,0,0,1,8.78-14.22l80-40A16,16,0,0,1,128,40a15.93,15.93,0,0,1,11.31,4.66l80,80A16,16,0,0,1,240,128ZM128,51.34l71.21,71.22L128,193.66,56.79,122.45Z"></path></svg>
+                <nav class="flex items-center space-x-2 p-1.5 rounded-full bg-gray-800/50 border border-gray-700/50">
+                    <a href="#intro" class="nav-button group relative flex items-center justify-center gap-2 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110"><circle cx="12" cy="12" r="10"/><path d="m14.31 8.69 1.4-1.4a2 2 0 0 1 2.83 0l1.4 1.4a2 2 0 0 1 0 2.83l-1.4 1.4M8.69 14.31l-1.4 1.4a2 2 0 0 1-2.83 0l-1.4-1.4a2 2 0 0 1 0-2.83l1.4-1.4"/><line x1="12" x2="12" y1="2"/><line x1="12" x2="12" y1="22"/><line x1="2" x2="12" y1="12"/><line x1="22" x2="12" y1="12"/></svg>
                         <span class="font-lato hidden sm:inline">Introdução</span>
                     </a>
-
-                    <!-- BOTÃO DE SLIDES AGORA ABRE O MODAL ALTERNATIVO -->
-                    <button onclick="openSlidesModal()"
-                        class="group flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-pink-600/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5"><path d="M224,192V64a16,16,0,0,0-16-16H48A16,16,0,0,0,32,64V192a16,16,0,0,0,16,16H208A16,16,0,0,0,224,192Zm-16,0H48V64H208Z"></path></svg>
-                        <span class="font-lato hidden sm:inline">Visualizar Slides</span>
+                    <button onclick="openSlidesModal()" class="nav-button group relative flex items-center justify-center gap-2 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+                        <span class="font-lato hidden sm:inline">Slides</span>
                     </button>
-                    
-                    <!-- BOTÃO PARA ABRIR O MODAL DO QUIZ -->
-                    <button onclick="openQuizModal()" class="group flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full bg-pink-600/50 hover:bg-pink-600">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5"><path d="M208,128a8,8,0,0,1-8,8H176v32a8,8,0,0,1-16,0V136H96v32a8,8,0,0,1-16,0V136H48a8,8,0,0,1,0-16H80V88a8,8,0,0,1,16,0v32h64V88a8,8,0,0,1,16,0v32h32A8,8,0,0,1,208,128Z"></path></svg>
-                        <span class="font-lato font-bold">Quiz</span>
+                    <button onclick="openQuizModal()" class="nav-button group relative flex items-center justify-center gap-2 text-white font-bold transition-all duration-300 px-4 py-2 rounded-full bg-pink-600/80 hover:bg-pink-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+                        <span class="font-lato">Quiz</span>
                     </button>
-                    
-                    <a href="#futuro" class="group flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5"><path d="M224,128a96,96,0,1,1-96-96A96.11,96.11,0,0,1,224,128Zm-16,0a80,80,0,1,0-80,80A80.09,80.09,0,0,0,208,128ZM164.71,91.29a8,8,0,0,0-11.42,0L136,108.59V80a8,8,0,0,0-16,0v28.59L102.71,91.29a8,8,0,0,0-11.42,11.42l24,24a8.17,8.17,0,0,0,5.69,2.22A8.17,8.17,0,0,0,128,127.29l24-24A8,8,0,0,0,164.71,91.29Z"></path></svg>
+                    <a href="#futuro" class="nav-button group relative flex items-center justify-center gap-2 text-gray-300 hover:text-white transition-all duration-300 px-4 py-2 rounded-full hover:bg-purple-600/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110"><path d="M12 3c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5H12c-.8 0-1.5-.7-1.5-1.5V4.5c0-.8.7-1.5 1.5-1.5z"/><path d="M8.5 6.5c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5h-.01c-.8 0-1.5-.7-1.5-1.5V8c0-.8.7-1.5 1.5-1.5z"/><path d="M15.5 6.5c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5h-.01c-.8 0-1.5-.7-1.5-1.5V8c0-.8.7-1.5 1.5-1.5z"/><path d="M19 12c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5h-.01c-.8 0-1.5-.7-1.5-1.5V13.5c0-.8.7-1.5 1.5-1.5z"/><path d="M5 12c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5H5c-.8 0-1.5-.7-1.5-1.5V13.5c0-.8.7-1.5 1.5-1.5z"/><path d="M8.5 15.5c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5h-.01c-.8 0-1.5-.7-1.5-1.5V17c0-.8.7-1.5 1.5-1.5z"/><path d="M15.5 15.5c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5h-.01c-.8 0-1.5-.7-1.5-1.5V17c0-.8.7-1.5 1.5-1.5z"/><path d="M12 18c.8 0 1.5.7 1.5 1.5v.01c0 .8-.7 1.5-1.5 1.5H12c-.8 0-1.5-.7-1.5-1.5V19.5c0-.8.7-1.5 1.5-1.5z"/></svg>
                         <span class="font-lato hidden sm:inline">O Futuro</span>
                     </a>
-
-                    <button onclick="document.getElementById('settings-modal').style.display='flex';" class="group flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-2 py-2 rounded-full hover:bg-purple-600/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6"><path d="M213.66,138.34a8,8,0,0,1,0,11.32l-56,56A8,8,0,0,1,144,200v-24H40a8,8,0,0,1,0-16h104V104a8,8,0,0,1,13.66-5.66l56,56A8,8,0,0,1,213.66,138.34Z"></path></svg>
+                    <button onclick="document.getElementById('settings-modal').style.display='flex';" class="nav-button group relative flex items-center justify-center gap-1 text-gray-300 hover:text-white transition-all duration-300 px-3 py-2 rounded-full hover:bg-purple-600/30">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 transition-transform group-hover:scale-110 group-hover:rotate-90"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2l-.15.08a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1 0-2l.15-.08a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
                     </button>
                 </nav>
             </div>
@@ -209,14 +197,12 @@
             <div class="ios-card rounded-3xl p-8 shadow-2xl w-full max-w-lg mx-4">
                 <h2 class="text-2xl font-bold font-poppins text-white mb-4">Configurações</h2>
                 <p class="text-gray-400 mb-6 font-lato">As animações 3D estão pré-definidas para funcionar offline.</p>
-                
                 <div id="display-mode" class="space-y-6 bg-gray-800 p-6 rounded-2xl">
                     <h3 class="text-xl font-semibold font-poppins text-white mb-3">Modo de Exibição</h3>
                     <button id="fullscreen-button" onclick="toggleFullscreen()" class="w-full px-4 py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-colors duration-200">
                         Entrar em Tela Cheia
                     </button>
                 </div>
-
                 <button onclick="document.getElementById('settings-modal').style.display='none';" class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-800 transition-colors duration-200 mt-8">
                     Fechar
                 </button>
@@ -225,89 +211,53 @@
 
         <!-- Conteúdo principal -->
         <main class="container mx-auto p-6 md:p-8 space-y-24 relative z-10">
-            <!-- Seção de Introdução -->
-            <section id="intro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in">
-                <h2 class="text-4xl font-bold font-poppins text-white mb-4 drop-shadow-md">
-                    A Introdução à Bioética
-                </h2>
-                <p class="text-gray-300 leading-relaxed text-lg font-lato">
-                    A **bioética** é o estudo sistemático das dimensões morais e das decisões relacionadas à vida. Em sua essência, ela explora os dilemas éticos que surgem com os avanços da ciência e da tecnologia, especialmente na medicina e biologia.
-                </p>
+            <!-- Seções com animação escalonada -->
+            <section id="intro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.2s;">
+                <h2 class="text-4xl font-bold font-poppins text-white mb-4 drop-shadow-md">A Introdução à Bioética</h2>
+                <p class="text-gray-300 leading-relaxed text-lg font-lato">A **bioética** é o estudo sistemático das dimensões morais e das decisões relacionadas à vida. Em sua essência, ela explora os dilemas éticos que surgem com os avanços da ciência e da tecnologia, especialmente na medicina e biologia.</p>
             </section>
 
-            <!-- Seção sobre Clonagem -->
-            <section id="clonagem" class="fade-in" style="animation-delay: 0.2s;">
+            <section id="clonagem" class="fade-in-stagger opacity-0" style="animation-delay: 0.4s;">
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="ios-card rounded-3xl p-8 shadow-2xl">
-                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="inline-block w-6 h-6 mr-2"><path d="M140,24a12,12,0,0,0-12,12V68H64a12,12,0,0,0-12,12v72a12,12,0,0,0,12,12H96v48a12,12,0,0,0,12,12h48a12,12,0,0,0,12-12V164h32a12,12,0,0,0,12-12V80a12,12,0,0,0-12-12H152V36A12,12,0,0,0,140,24ZM64,152V88h64v64Zm48,40V164h32v28Zm80-28H164V88h40Z"></path></svg>
-                            O que é Clonagem?
-                        </h3>
-                        <p class="text-gray-300 leading-relaxed font-lato">
-                            **Clonagem** refere-se à criação de uma cópia geneticamente idêntica de um ser vivo. Este processo pode ocorrer naturalmente, como em bactérias e plantas, ou ser induzido em laboratório, como a famosa Ovelha Dolly.
-                        </p>
+                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">O que é Clonagem?</h3>
+                        <p class="text-gray-300 leading-relaxed font-lato">**Clonagem** refere-se à criação de uma cópia geneticamente idêntica de um ser vivo. Este processo pode ocorrer naturalmente, como em bactérias e plantas, ou ser induzido em laboratório, como a famosa Ovelha Dolly.</p>
                     </div>
                     <div class="ios-card rounded-3xl p-8 shadow-2xl">
-                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="inline-block w-6 h-6 mr-2"><path d="M128,104a24,24,0,1,1-24,24A24,24,0,0,1,128,104Zm112,24A112,112,0,1,1,128,16,112,112,0,0,1,240,128ZM128,32a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,32Z"></path></svg>
-                            Tipos de Clonagem
-                        </h3>
+                        <h3 class="text-2xl font-bold font-poppins text-white mb-4">Tipos de Clonagem</h3>
                         <ul class="list-disc list-inside space-y-2 text-gray-300 leading-relaxed font-lato">
-                            <li>
-                                <strong class="text-white">Clonagem Terapêutica:</strong> Criação de embriões para obtenção de células-tronco, visando o tratamento de doenças (não resulta em um indivíduo completo).
-                            </li>
-                            <li>
-                                <strong class="text-white">Clonagem Reprodutiva:</strong> Produção de um organismo completo, geneticamente idêntico a outro. É o tipo que levanta mais dilemas éticos.
-                            </li>
+                            <li><strong class="text-white">Clonagem Terapêutica:</strong> Criação de embriões para obtenção de células-tronco.</li>
+                            <li><strong class="text-white">Clonagem Reprodutiva:</strong> Produção de um organismo completo.</li>
                         </ul>
                     </div>
                 </div>
             </section>
             
-            <!-- Seção de Questões Éticas (mantida) -->
-            <section id="questoes-eticas" class="ios-card rounded-3xl p-8 shadow-2xl fade-in" style="animation-delay: 0.4s;">
-                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="inline-block w-6 h-6 mr-2"><path d="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216ZM128,96a8,8,0,0,1,8,8v40a8,8,0,0,1-16,0V104A8,8,0,0,1,128,96ZM128,172a12,12,0,1,1,12-12A12,12,0,0,1,128,172Z"></path></svg>
-                    Questões Éticas e Filosóficas
-                </h2>
-                <p class="text-gray-300 leading-relaxed text-lg mb-6 font-lato">
-                    A clonagem, especialmente a reprodutiva, levanta profundas questões morais.
-                </p>
+            <section id="questoes-eticas" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.6s;">
+                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">Questões Éticas e Filosóficas</h2>
                 <div class="grid md:grid-cols-3 gap-6">
-                    <div class="sub-card bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700 transition-colors duration-200">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
                         <h4 class="text-xl font-semibold font-poppins text-white mb-2">Dignidade Humana</h4>
-                        <p class="text-gray-400 font-lato">
-                            O clone seria uma pessoa com a mesma dignidade? A clonagem diminui o valor da vida humana?
-                        </p>
+                        <p class="text-gray-400 font-lato">A clonagem diminui o valor da vida humana?</p>
                     </div>
-                    <div class="sub-card bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700 transition-colors duration-200">
-                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Identidade e Unicidade</h4>
-                        <p class="text-gray-400 font-lato">
-                            A clonagem poderia prejudicar a unicidade de um indivíduo, gerando conflitos de identidade?
-                        </p>
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
+                        <h4 class="text-xl font-semibold font-poppins text-white mb-2">Identidade</h4>
+                        <p class="text-gray-400 font-lato">A clonagem prejudica a unicidade de um indivíduo?</p>
                     </div>
-                    <div class="sub-card bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700 transition-colors duration-200">
+                    <div class="bg-gray-800 rounded-xl p-6 shadow-xl hover:bg-gray-700/50 transition-colors duration-200">
                         <h4 class="text-xl font-semibold font-poppins text-white mb-2">Uso Indevido</h4>
-                        <p class="text-gray-400 font-lato">
-                            Há o risco de clonagem com fins utilitários, como a criação de "peças de reposição"?
-                        </p>
+                        <p class="text-gray-400 font-lato">Risco de clonagem para fins utilitários?</p>
                     </div>
                 </div>
             </section>
 
-            <!-- Seção O Futuro -->
-            <section id="futuro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in" style="animation-delay: 0.6s;">
-                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="inline-block w-6 h-6 mr-2"><path d="M224,128a96,96,0,1,1-96-96A96.11,96.11,0,0,1,224,128Zm-16,0a80,80,0,1,0-80,80A80.09,80.09,0,0,0,208,128ZM164.71,91.29a8,8,0,0,0-11.42,0L136,108.59V80a8,8,0,0,0-16,0v28.59L102.71,91.29a8,8,0,0,0-11.42,11.42l24,24a8.17,8.17,0,0,0,5.69,2.22A8.17,8.17,0,0,0,128,127.29l24-24A8,8,0,0,0,164.71,91.29Z"></path></path></svg>
-                    O Futuro da Bioética
-                </h2>
-                <p class="text-gray-300 leading-relaxed text-lg font-lato">
-                    Com o avanço da genética e da engenharia biológica, a **bioética** continua a ser um campo crucial para orientar a sociedade. É essencial que o diálogo sobre esses temas permaneça aberto e inclusivo, garantindo que o progresso científico caminhe lado a lado com a responsabilidade ética.
-                </p>
+            <section id="futuro" class="ios-card rounded-3xl p-8 shadow-2xl fade-in-stagger opacity-0" style="animation-delay: 0.8s;">
+                <h2 class="text-3xl font-bold font-poppins text-white mb-4 drop-shadow-md">O Futuro da Bioética</h2>
+                <p class="text-gray-300 leading-relaxed text-lg font-lato">Com o avanço da genética e da engenharia biológica, a **bioética** continua a ser um campo crucial para orientar a sociedade, garantindo que o progresso científico caminhe lado a lado com a responsabilidade ética.</p>
             </section>
         </main>
         
-        <footer class="text-center text-gray-500 p-6 border-t border-gray-800 mt-24">
+        <footer class="text-center text-gray-500 p-6 border-t border-gray-800/50 mt-24">
             <p>Desenvolvido com foco em estética e modernidade.</p>
         </footer>
     </div>
@@ -316,42 +266,22 @@
     <div id="slides-modal" class="fixed inset-0 z-[80] modal-hidden justify-center items-center bg-black/90 backdrop-blur-xl p-4 transition-opacity duration-300">
         <div class="ios-card rounded-3xl p-6 shadow-2xl w-full max-w-6xl h-[90vh] flex flex-col">
             <div class="flex justify-between items-center pb-3 mb-4 border-b border-gray-700 flex-shrink-0">
-                <h2 class="text-xl sm:text-2xl font-bold font-poppins text-white flex items-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-pink-500"><path d="M224,192V64a16,16,0,0,0-16-16H48A16,16,0,0,0,32,64V192a16,16,0,0,0,16,16H208A16,16,0,0,0,224,192Zm-16,0H48V64H208Z"></path></svg>
-                    Apresentação de Slides
-                </h2>
+                <h2 class="text-xl sm:text-2xl font-bold font-poppins text-white flex items-center gap-2">Apresentação de Slides</h2>
                 <button onclick="closeSlidesModal()" class="text-gray-400 hover:text-white transition-colors duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66a8,8,0,0,1,11.32-11.32L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
                 </button>
             </div>
-            
-            <!-- Conteúdo do Iframe e Fallback -->
             <div id="iframe-container" class="relative flex-grow bg-gray-900 rounded-2xl overflow-hidden">
-                <!-- Spinner de Carregamento (estilo iOS) -->
                 <div id="loading-spinner" class="absolute inset-0 flex flex-col justify-center items-center bg-gray-900/80 backdrop-blur-sm z-10">
                     <div class="spinner"></div>
-                    <p class="mt-4 text-lg text-gray-300 font-poppins tracking-wider">Carregando Apresentação...</p>
+                    <p class="mt-4 text-lg text-gray-300 font-poppins tracking-wider">Carregando...</p>
                 </div>
-
-                <!-- Fallback -->
                 <div id="fallback-message" class="absolute inset-0 flex flex-col justify-center items-center p-8 text-center hidden">
-                    <p class="text-lg font-semibold text-red-400 mb-4">
-                        Não foi possível carregar o slide.
-                    </p>
-                    <p class="text-gray-300 mb-8 font-lato">
-                        O Canva pode estar bloqueando a visualização direta. Por favor, use o botão abaixo para abrir em uma nova aba.
-                    </p>
-                    <a href="https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-pink-600 text-white font-bold text-lg hover:bg-pink-700 transition-colors duration-300 shadow-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6"><path d="M216,128a8,8,0,0,1-8,8H176v32a8,8,0,0,1-16,0V136H48A16,16,0,0,1,32,120V48A16,16,0,0,1,48,32H168a16,16,0,0,1,16,16v32h32a8,8,0,0,1,0,16ZM168,104V56H48v64H168Z"></path></svg>
-                        Abrir em Nova Aba
-                    </a>
+                    <p class="text-lg font-semibold text-red-400 mb-4">Não foi possível carregar o slide.</p>
+                    <p class="text-gray-300 mb-8 font-lato">Por favor, use o botão abaixo para abrir em uma nova aba.</p>
+                    <a href="https://www.canva.com/design/DAG0i5NC_oo/A-V3masHTyCacF7CVq9h_w/view" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-pink-600 text-white font-bold text-lg hover:bg-pink-700 transition-colors duration-300 shadow-lg">Abrir em Nova Aba</a>
                 </div>
-
-                <!-- Iframe para os slides -->
-                <iframe id="slide-iframe" class="w-full h-full border-0 hidden"
-                        src="about:blank"
-                        allowfullscreen="true" allow="fullscreen">
-                </iframe>
+                <iframe id="slide-iframe" class="w-full h-full border-0 hidden" src="about:blank" allowfullscreen="true" allow="fullscreen"></iframe>
             </div>
         </div>
     </div>
@@ -359,58 +289,35 @@
     <!-- QUIZ MODAL (MODO APRESENTAÇÃO E INTERATIVO) -->
     <div id="quiz-modal" class="fixed inset-0 z-[70] modal-hidden justify-center items-center bg-black/90 backdrop-blur-xl p-4 transition-opacity duration-300 overflow-y-auto">
         <div class="ios-card rounded-3xl p-8 shadow-2xl w-full max-w-4xl mx-auto my-auto min-h-[80vh] flex flex-col">
-            <!-- Título do Modal e Botão Fechar -->
             <div class="flex justify-between items-center pb-4 border-b border-gray-700 mb-6 flex-shrink-0">
-                <h2 id="quiz-main-title" class="text-3xl sm:text-4xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 drop-shadow-md">
-                    Quiz
-                </h2>
+                <h2 id="quiz-main-title" class="text-3xl sm:text-4xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-purple-500 to-pink-500 drop-shadow-md">Quiz</h2>
                 <button onclick="closeQuizModal()" class="text-gray-400 hover:text-white transition-colors duration-200">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-8 h-8"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66a8,8,0,0,1,11.32-11.32L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"></path></svg>
                 </button>
             </div>
-            
-            <div id="quiz-content-area" class="flex-grow overflow-hidden flex flex-col">
-                <!-- 1. Seleção de Modo -->
-                <div id="mode-selection">
+            <div id="quiz-content-area" class="flex-grow overflow-hidden flex flex-col relative">
+                <div id="mode-selection" class="quiz-view">
                     <p class="text-lg text-gray-300 font-lato mb-4">Escolha o formato do Quiz:</p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="selectMode('interactive')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">
-                            Quiz Interativo
-                        </button>
-                        <button onclick="selectMode('presentation')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">
-                            Modo Apresentação
-                        </button>
+                        <button onclick="selectMode('interactive')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">Quiz Interativo</button>
+                        <button onclick="selectMode('presentation')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">Modo Apresentação</button>
                     </div>
                 </div>
-
-                <!-- 2. Seleção de Tópico (Oculto inicialmente) -->
-                <div id="topic-selection" class="hidden">
+                <div id="topic-selection" class="quiz-view hidden">
                     <p class="text-lg text-gray-300 font-lato mb-4">Escolha o tópico:</p>
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button onclick="startQuiz('bioetica')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">
-                            Bioética
-                        </button>
-                        <button onclick="startQuiz('clonagem')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">
-                            Clonagem
-                        </button>
+                        <button onclick="startQuiz('bioetica')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-purple-600/30 text-white font-bold text-xl hover:bg-purple-600/50 transition-colors duration-300">Bioética</button>
+                        <button onclick="startQuiz('clonagem')" class="ios-card sub-card flex-1 px-6 py-4 rounded-xl bg-pink-600/30 text-white font-bold text-xl hover:bg-pink-600/50 transition-colors duration-300">Clonagem</button>
                     </div>
                 </div>
-
-                <!-- 3. Área de Exibição do Quiz (Modo Apresentação) -->
-                <div id="quiz-display-area" class="hidden flex-grow overflow-y-auto pr-4">
+                <div id="quiz-display-area" class="quiz-view hidden flex-grow overflow-y-auto pr-4">
                     <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-950/80 backdrop-blur-sm py-2 z-10">
                         <h3 id="quiz-topic-title-display" class="text-2xl font-bold font-poppins text-white"></h3>
-                        <button id="reveal-answers-button" onclick="revealAnswers()" class="px-4 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors duration-300">
-                            Revelar Respostas
-                        </button>
+                        <button id="reveal-answers-button" onclick="revealAnswers()" class="px-4 py-2 rounded-full bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors duration-300">Revelar Respostas</button>
                     </div>
-                    <div id="questions-list" class="space-y-8">
-                        <!-- Perguntas serão injetadas aqui -->
-                    </div>
+                    <div id="questions-list" class="space-y-8"></div>
                 </div>
-                
-                <!-- 4. Área do Quiz Interativo -->
-                <div id="quiz-interactive-area" class="hidden">
+                <div id="quiz-interactive-area" class="quiz-view hidden">
                     <h3 id="quiz-topic-title-interactive" class="text-2xl font-bold font-poppins text-white mb-6"></h3>
                     <div class="bg-gray-800 p-6 rounded-2xl shadow-inner mb-6">
                         <p id="question-text" class="text-xl font-semibold text-white mb-4"></p>
@@ -419,37 +326,24 @@
                     <div class="mt-8 pt-4 border-t border-gray-700">
                         <div id="feedback-message" class="text-lg font-bold min-h-[3rem] flex flex-col gap-2 items-start justify-center"></div>
                         <div class="flex justify-end mt-4">
-                            <button id="next-button" onclick="nextQuestion()" class="px-6 py-3 rounded-full bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>
-                                Próxima Pergunta
-                            </button>
+                            <button id="next-button" onclick="nextQuestion()" class="px-6 py-3 rounded-full bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-300 opacity-50 cursor-not-allowed" disabled>Próxima Pergunta</button>
                         </div>
                     </div>
                 </div>
-
-                <!-- 5. Área de Resultado (Quiz Interativo) -->
-                <div id="result-area" class="hidden text-center p-8">
+                <div id="result-area" class="quiz-view hidden text-center p-8">
                     <h3 class="text-4xl font-extrabold font-poppins text-white mb-4">Resultado Final</h3>
                     <p id="result-score" class="text-6xl font-bold font-poppins bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-purple-400 mb-6"></p>
                     <p class="text-lg text-gray-300 font-lato mb-8">Parabéns por completar o quiz!</p>
-                    <button onclick="resetQuiz()" class="px-6 py-3 rounded-full bg-pink-600 text-white font-semibold hover:bg-pink-700 transition-colors duration-300">
-                        Fazer Outro Quiz
-                    </button>
+                    <button onclick="resetQuiz()" class="px-6 py-3 rounded-full bg-pink-600 text-white font-semibold hover:bg-pink-700 transition-colors duration-300">Fazer Outro Quiz</button>
                 </div>
             </div>
-            
-            <!-- Botão de Voltar/Sair no rodapé do modal -->
             <div class="pt-4 mt-auto flex-shrink-0">
-                 <button id="quiz-back-button" onclick="goBack()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200 hidden">
-                        Voltar
-                 </button>
-                 <button id="quiz-close-button" onclick="closeQuizModal()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200">
-                        Sair do Quiz
-                 </button>
+                 <button id="quiz-back-button" onclick="goBack()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200 hidden">Voltar</button>
+                 <button id="quiz-close-button" onclick="closeQuizModal()" class="w-full px-4 py-3 rounded-lg bg-gray-700 text-white font-semibold hover:bg-gray-600 transition-colors duration-200">Sair do Quiz</button>
             </div>
         </div>
     </div>
     
-    <!-- Script para a animação 3D e funcionalidades e QUIZ -->
     <script type="module">
         // --- Estrutura de Dados do Quiz ---
         const quizQuestions = {
@@ -559,169 +453,113 @@
         };
 
         // --- Gerenciamento do Quiz ---
-        // Elementos do DOM
         const quizModal = document.getElementById('quiz-modal');
-        const modeSelection = document.getElementById('mode-selection');
-        const topicSelection = document.getElementById('topic-selection');
-        const quizDisplayArea = document.getElementById('quiz-display-area');
-        const quizInteractiveArea = document.getElementById('quiz-interactive-area');
-        const resultArea = document.getElementById('result-area');
+        const quizViews = document.querySelectorAll('.quiz-view');
         const quizBackButton = document.getElementById('quiz-back-button');
         const quizCloseButton = document.getElementById('quiz-close-button');
         
-        // Variáveis de Estado
-        let quizMode = ''; // 'interactive' or 'presentation'
+        let quizMode = '';
         let currentTopic = '';
         let currentQuestionIndex = 0;
         let score = 0;
         let isAnswered = false;
-        let quizState = 'mode'; // 'mode', 'topic', 'active'
-
-        // Funções de Navegação e Estado
-        window.openQuizModal = () => {
-            quizModal.classList.remove('modal-hidden');
-            quizModal.classList.add('modal-visible');
-            resetQuiz();
-        };
-
-        window.closeQuizModal = () => {
-            quizModal.classList.remove('modal-visible');
-            quizModal.classList.add('modal-hidden');
-        };
-
-        window.selectMode = (mode) => {
-            quizMode = mode;
-            quizState = 'topic';
-            updateQuizView();
-        };
-
-        window.startQuiz = (topic) => {
-            currentTopic = topic;
-            quizState = 'active';
-            if (quizMode === 'interactive') {
-                currentQuestionIndex = 0;
-                score = 0;
-                isAnswered = false;
-                loadInteractiveQuestion();
-            } else {
-                loadPresentationQuiz();
-            }
-            updateQuizView();
-        };
-        
-        window.resetQuiz = () => {
-            quizState = 'mode';
-            quizMode = '';
-            currentTopic = '';
-            updateQuizView();
-        };
-        
-        window.goBack = () => {
-            if (quizState === 'active') {
-                quizState = 'topic';
-            } else if (quizState === 'topic') {
-                quizState = 'mode';
-            }
-            updateQuizView();
-        };
+        let quizState = 'mode';
 
         function updateQuizView() {
-            // Esconde todas as seções
-            modeSelection.classList.add('hidden');
-            topicSelection.classList.add('hidden');
-            quizDisplayArea.classList.add('hidden');
-            quizInteractiveArea.classList.add('hidden');
-            resultArea.classList.add('hidden');
-            quizBackButton.classList.add('hidden');
-            quizCloseButton.classList.remove('hidden');
+            quizViews.forEach(view => view.classList.add('hidden'));
 
             if (quizState === 'mode') {
-                modeSelection.classList.remove('hidden');
+                document.getElementById('mode-selection').classList.remove('hidden');
+                quizBackButton.classList.add('hidden');
+                quizCloseButton.classList.remove('hidden');
             } else if (quizState === 'topic') {
-                topicSelection.classList.remove('hidden');
+                document.getElementById('topic-selection').classList.remove('hidden');
                 quizBackButton.classList.remove('hidden');
                 quizCloseButton.classList.add('hidden');
             } else if (quizState === 'active') {
                 quizBackButton.classList.remove('hidden');
                 quizCloseButton.classList.add('hidden');
                 if (quizMode === 'interactive') {
-                    quizInteractiveArea.classList.remove('hidden');
+                    if (currentQuestionIndex < quizQuestions[currentTopic].length) {
+                        document.getElementById('quiz-interactive-area').classList.remove('hidden');
+                    } else {
+                        document.getElementById('result-area').classList.remove('hidden');
+                    }
                 } else {
-                    quizDisplayArea.classList.remove('hidden');
+                    document.getElementById('quiz-display-area').classList.remove('hidden');
                 }
             }
         }
         
+        window.openQuizModal = () => { quizModal.classList.remove('modal-hidden'); quizModal.classList.add('modal-visible'); resetQuiz(); };
+        window.closeQuizModal = () => { quizModal.classList.remove('modal-visible'); quizModal.classList.add('modal-hidden'); };
+        window.selectMode = (mode) => { quizMode = mode; quizState = 'topic'; updateQuizView(); };
+        window.startQuiz = (topic) => {
+            currentTopic = topic;
+            quizState = 'active';
+            if (quizMode === 'interactive') { currentQuestionIndex = 0; score = 0; loadInteractiveQuestion(); } 
+            else { loadPresentationQuiz(); }
+            updateQuizView();
+        };
+        window.resetQuiz = () => { quizState = 'mode'; quizMode = ''; currentTopic = ''; updateQuizView(); };
+        window.goBack = () => {
+            if (quizState === 'active') { quizState = 'topic'; } 
+            else if (quizState === 'topic') { quizState = 'mode'; }
+            updateQuizView();
+        };
+
         // --- Lógica do Modo Apresentação ---
-        const quizTopicTitleDisplay = document.getElementById('quiz-topic-title-display');
-        const questionsList = document.getElementById('questions-list');
-        const revealBtn = document.getElementById('reveal-answers-button');
-        
         function loadPresentationQuiz() {
-            quizTopicTitleDisplay.textContent = currentTopic === 'bioetica' ? 'Tópico: Bioética' : 'Tópico: Clonagem';
-            questionsList.innerHTML = '';
+            const topicTitle = document.getElementById('quiz-topic-title-display');
+            const list = document.getElementById('questions-list');
+            const revealBtn = document.getElementById('reveal-answers-button');
+            
+            topicTitle.textContent = currentTopic === 'bioetica' ? 'Tópico: Bioética' : 'Tópico: Clonagem';
+            list.innerHTML = '';
             revealBtn.style.display = 'block';
 
-            const questions = quizQuestions[currentTopic];
-            questions.forEach((q, index) => {
-                const questionBlock = document.createElement('div');
-                questionBlock.className = 'bg-gray-800/50 p-6 rounded-2xl shadow-inner';
-                questionBlock.innerHTML = `
-                    <p class="text-xl font-semibold text-white mb-4">
-                        <span class="text-purple-400 font-bold">Q${index + 1}:</span> ${q.q}
-                    </p>
-                    <div class="space-y-3">
-                        ${q.options.map((opt, optIndex) => `
-                            <div class="presentation-option p-3 rounded-lg border-2 border-gray-700 text-gray-300 font-lato flex items-center gap-3" data-correct="${opt.correct}">
-                                <span class="font-bold text-lg text-pink-400">${String.fromCharCode(65 + optIndex)})</span> ${opt.text}
-                            </div>
-                        `).join('')}
-                    </div>`;
-                questionsList.appendChild(questionBlock);
+            quizQuestions[currentTopic].forEach((q, index) => {
+                const qBlock = document.createElement('div');
+                qBlock.className = 'bg-gray-800/50 p-6 rounded-2xl shadow-inner';
+                qBlock.innerHTML = `<p class="text-xl font-semibold text-white mb-4"><span class="text-purple-400 font-bold">Q${index + 1}:</span> ${q.q}</p>
+                    <div class="space-y-3">${q.options.map((opt, i) => `<div class="presentation-option p-3 rounded-lg border-2 border-gray-700 text-gray-300 font-lato" data-correct="${opt.correct}"><span class="font-bold text-lg text-pink-400">${String.fromCharCode(65 + i)})</span> ${opt.text}</div>`).join('')}</div>`;
+                list.appendChild(qBlock);
             });
         }
         
         window.revealAnswers = () => {
-            const correctOptions = questionsList.querySelectorAll('.presentation-option[data-correct="true"]');
-            correctOptions.forEach(opt => {
+            document.querySelectorAll('.presentation-option[data-correct="true"]').forEach(opt => {
                 opt.classList.add('border-green-500/50', 'bg-green-500/10');
                 opt.innerHTML += `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-5 h-5 text-green-400 ml-auto"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg>`;
             });
-            revealBtn.style.display = 'none';
+            document.getElementById('reveal-answers-button').style.display = 'none';
         };
 
         // --- Lógica do Quiz Interativo ---
-        const quizTopicTitleInteractive = document.getElementById('quiz-topic-title-interactive');
-        const questionText = document.getElementById('question-text');
-        const optionsContainer = document.getElementById('options-container');
-        const feedbackMessage = document.getElementById('feedback-message');
-        const nextButton = document.getElementById('next-button');
-        const resultScore = document.getElementById('result-score');
-
         function loadInteractiveQuestion() {
+            const questions = quizQuestions[currentTopic];
+            if (currentQuestionIndex >= questions.length) { showResults(); return; }
+
             isAnswered = false;
+            const nextButton = document.getElementById('next-button');
             nextButton.disabled = true;
             nextButton.classList.add('opacity-50', 'cursor-not-allowed');
             nextButton.classList.remove('bg-purple-600', 'hover:bg-purple-700');
-            feedbackMessage.innerHTML = '';
+            
+            document.getElementById('feedback-message').innerHTML = '';
+            const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
 
-            const questions = quizQuestions[currentTopic];
-            if (currentQuestionIndex >= questions.length) {
-                showResults();
-                return;
-            }
-
             const currentQ = questions[currentQuestionIndex];
-            quizTopicTitleInteractive.textContent = `${currentTopic === 'bioetica' ? 'Bioética' : 'Clonagem'} - Pergunta ${currentQuestionIndex + 1}/${questions.length}`;
-            questionText.textContent = currentQ.q;
+            document.getElementById('quiz-topic-title-interactive').textContent = `${currentTopic === 'bioetica' ? 'Bioética' : 'Clonagem'} - Pergunta ${currentQuestionIndex + 1}/${questions.length}`;
+            document.getElementById('question-text').textContent = currentQ.q;
 
             currentQ.options.forEach((option, index) => {
-                const optionElement = document.createElement('div');
-                optionElement.className = 'quiz-option p-4 rounded-xl border-2 border-gray-700 text-gray-200 font-lato flex items-center gap-3';
-                optionElement.setAttribute('onclick', `checkAnswer(${index}, this)`);
-                optionElement.innerHTML = `<span class="font-bold text-lg text-purple-400">${String.fromCharCode(65 + index)})</span> ${option.text}`;
-                optionsContainer.appendChild(optionElement);
+                const optEl = document.createElement('div');
+                optEl.className = 'quiz-option p-4 rounded-xl border-2 border-gray-700 text-gray-200 font-lato flex items-center gap-3';
+                optEl.setAttribute('onclick', `checkAnswer(${index}, this)`);
+                optEl.innerHTML = `<span class="font-bold text-lg text-purple-400">${String.fromCharCode(65 + index)})</span> ${option.text}`;
+                optionsContainer.appendChild(optEl);
             });
         }
         
@@ -732,213 +570,107 @@
             const questions = quizQuestions[currentTopic];
             const currentQ = questions[currentQuestionIndex];
             const selectedOption = currentQ.options[selectedIndex];
+            const feedbackEl = document.getElementById('feedback-message');
 
-            Array.from(optionsContainer.children).forEach((el, index) => {
-                el.onclick = null;
-                el.style.cursor = 'default';
-                if (currentQ.options[index].correct) {
-                    el.classList.add('correct');
-                }
+            Array.from(document.getElementById('options-container').children).forEach((el, index) => {
+                el.onclick = null; el.style.cursor = 'default';
+                if (currentQ.options[index].correct) el.classList.add('correct');
             });
 
             if (selectedOption.correct) {
                 score++;
-                feedbackMessage.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-green-500"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg><span class="text-green-500 font-poppins">Resposta Correta!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-green-400">Explicação:</span> ${selectedOption.reasoning}</p>`;
+                feedbackEl.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-green-500"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L120,140.69l42.34-42.35A8,8,0,0,1,173.66,98.34Z"></path></svg><span class="text-green-500 font-poppins">Resposta Correta!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-green-400">Explicação:</span> ${selectedOption.reasoning}</p>`;
             } else {
                 selectedElement.classList.add('incorrect');
                 const correctOpt = currentQ.options.find(o => o.correct);
-                feedbackMessage.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM176,176a8,8,0,0,1-11.31,0L128,141.31l-36.69,36.69a8,8,0,0,1-11.32-11.32L116.69,128,80,91.31A8,8,0,0,1,91.31,80L128,116.69,164.69,80a8,8,0,0,1,11.32,11.32L141.31,128l36.69,36.69A8,8,0,0,1,176,176Z"></path></svg><span class="text-red-500 font-poppins">Incorreto!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-red-400">Motivo do Erro:</span> ${selectedOption.reasoning}</p><p class="text-sm text-gray-300 font-lato mt-1"><span class="font-semibold text-green-400">Explicação Correta:</span> ${correctOpt.reasoning}</p>`;
+                feedbackEl.innerHTML = `<div class="flex items-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" class="w-6 h-6 text-red-500"><path d="M208,32H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM176,176a8,8,0,0,1-11.31,0L128,141.31l-36.69,36.69a8,8,0,0,1-11.32-11.32L116.69,128,80,91.31A8,8,0,0,1,91.31,80L128,116.69,164.69,80a8,8,0,0,1,11.32,11.32L141.31,128l36.69,36.69A8,8,0,0,1,176,176Z"></path></svg><span class="text-red-500 font-poppins">Incorreto!</span></div><p class="text-sm text-gray-300 font-lato mt-2"><span class="font-semibold text-red-400">Motivo do Erro:</span> ${selectedOption.reasoning}</p><p class="text-sm text-gray-300 font-lato mt-1"><span class="font-semibold text-green-400">Explicação Correta:</span> ${correctOpt.reasoning}</p>`;
             }
 
+            const nextButton = document.getElementById('next-button');
             nextButton.disabled = false;
             nextButton.classList.remove('opacity-50', 'cursor-not-allowed');
             nextButton.classList.add('bg-purple-600', 'hover:bg-purple-700');
         };
         
-        window.nextQuestion = () => {
-            currentQuestionIndex++;
-            loadInteractiveQuestion();
-        };
-
+        window.nextQuestion = () => { currentQuestionIndex++; loadInteractiveQuestion(); };
         function showResults() {
-            quizInteractiveArea.classList.add('hidden');
-            resultArea.classList.remove('hidden');
-            quizBackButton.classList.add('hidden');
-            quizCloseButton.classList.remove('hidden');
-
-            const totalQuestions = quizQuestions[currentTopic].length;
-            const percentage = Math.round((score / totalQuestions) * 100);
-            resultScore.textContent = `${score}/${totalQuestions} (${percentage}%)`;
+            const total = quizQuestions[currentTopic].length;
+            const percentage = Math.round((score / total) * 100);
+            document.getElementById('result-score').textContent = `${score}/${total} (${percentage}%)`;
+            updateQuizView();
         }
 
         // --- Funções de Inicialização e Animação 3D ---
         window.onload = function() {
-            // Scene, camera, and renderer setup
             const scene = new THREE.Scene();
             const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({
-                canvas: document.getElementById('main-3d-canvas'),
-                alpha: true,
-                antialias: true
-            });
+            const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('main-3d-canvas'), alpha: true, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setClearColor(0x000000, 0); // Fundo transparente para ver o body
+            renderer.setClearColor(0x000000, 0);
 
-            // Light sources
-            const ambientLight = new THREE.AmbientLight(0x404040, 2);
-            scene.add(ambientLight);
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
-            directionalLight.position.set(1, 1, 1).normalize();
-            scene.add(directionalLight);
+            scene.add(new THREE.AmbientLight(0x404040, 2));
+            const light = new THREE.DirectionalLight(0xffffff, 1.5);
+            light.position.set(1, 1, 1);
+            scene.add(light);
 
-            // Create the abstract "Cyber Brain" model
-            const createCyberBrain = () => {
-                const group = new THREE.Group();
-                const mainMaterial = new THREE.MeshStandardMaterial({
-                    color: 0x8A2BE2, // Purple
-                    emissive: 0x4B0082, // Dark purple emissive
-                    roughness: 0.4,
-                    metalness: 0.6,
-                    transparent: true,
-                    opacity: 0.8
-                });
-                
-                const wireframeMaterial = new THREE.LineBasicMaterial({
-                    color: 0x8A2BE2,
-                    transparent: true,
-                    opacity: 0.5
-                });
-                
-                const sphereGeometry = new THREE.IcosahedronGeometry(2, 1);
-                const sphereMesh = new THREE.Mesh(sphereGeometry, mainMaterial);
-                group.add(sphereMesh);
-                
-                const wireframe = new THREE.LineSegments(
-                    new THREE.EdgesGeometry(sphereGeometry),
-                    wireframeMaterial
-                );
-                group.add(wireframe);
-
-                // Add small, glowing particles
-                const particleGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-                const particleMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
-                for (let i = 0; i < 100; i++) {
-                    const particle = new THREE.Mesh(particleGeometry, particleMaterial);
-                    particle.position.set(
-                        (Math.random() - 0.5) * 8,
-                        (Math.random() - 0.5) * 8,
-                        (Math.random() - 0.5) * 8
-                    );
-                    group.add(particle);
-                }
-                
-                return group;
-            };
-
-            const model = createCyberBrain();
-            scene.add(model);
+            const group = new THREE.Group();
+            const mainMat = new THREE.MeshStandardMaterial({ color: 0x8A2BE2, emissive: 0x4B0082, roughness: 0.4, metalness: 0.6, transparent: true, opacity: 0.8 });
+            const sphereGeom = new THREE.IcosahedronGeometry(2, 1);
+            group.add(new THREE.Mesh(sphereGeom, mainMat));
+            scene.add(group);
             camera.position.z = 5;
 
-            // Variables for mouse interaction
-            let mouseX = 0, mouseY = 0;
             let targetRotationX = 0, targetRotationY = 0;
-            const rotationSpeed = 0.05;
-
-            document.addEventListener('mousemove', (event) => {
-                mouseX = (event.clientX / window.innerWidth) * 2 - 1;
-                mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
-                targetRotationY = mouseX * 0.5;
-                targetRotationX = mouseY * 0.5;
-            }, false);
-
+            document.addEventListener('mousemove', (e) => {
+                targetRotationY = (e.clientX / window.innerWidth) * 0.5;
+                targetRotationX = (e.clientY / window.innerHeight) * 0.5;
+            });
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            // Animation loop
             const animate = () => {
                 requestAnimationFrame(animate);
-
-                // Update model rotation
-                model.rotation.x += (targetRotationX - model.rotation.x) * rotationSpeed;
-                model.rotation.y += (targetRotationY - model.rotation.y) * rotationSpeed;
-
-                // Add subtle, automatic rotation
-                model.rotation.y += 0.001;
-
-                // Animate particles (if they exist)
-                if (model.children.length > 2) {
-                    for (let i = 2; i < model.children.length; i++) {
-                        const particle = model.children[i];
-                        particle.position.y -= 0.01;
-                        if (particle.position.y < -4) {
-                            particle.position.y = 4;
-                        }
-                    }
-                }
-
+                group.rotation.x += (targetRotationX - group.rotation.x) * 0.05;
+                group.rotation.y += (targetRotationY - group.rotation.y) * 0.05;
+                group.rotation.y += 0.001;
                 renderer.render(scene, camera);
             };
-
             animate();
-
-            // --- Funcionalidades do modo de exibição (Tela Cheia) ---
+            
             window.toggleFullscreen = () => {
-                const button = document.getElementById('fullscreen-button');
-                try {
-                    if (!document.fullscreenElement) {
-                        document.documentElement.requestFullscreen().then(() => {
-                            console.log("Modo de tela cheia ativado com sucesso.");
-                        });
-                    } else {
-                        document.exitFullscreen().then(() => {
-                            console.log("Modo de tela cheia desativado com sucesso.");
-                        });
-                    }
-                } catch (e) {
-                    console.error("Erro geral na função de tela cheia:", e);
-                }
+                if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(err => console.error(err));
+                else document.exitFullscreen();
             };
-
             document.addEventListener('fullscreenchange', () => {
                 const button = document.getElementById('fullscreen-button');
-                if (button) {
-                    if (document.fullscreenElement) {
-                        button.textContent = 'Sair da Tela Cheia';
-                    } else {
-                        button.textContent = 'Entrar em Tela Cheia';
-                    }
-                }
+                if (button) button.textContent = document.fullscreenElement ? 'Sair da Tela Cheia' : 'Entrar em Tela Cheia';
             });
             
-            // Lógica do pré-carregamento e transições
             const loadingScreen = document.getElementById('loading-screen');
             const mainContent = document.getElementById('main-content');
+            const mainHeader = document.getElementById('main-header');
             
             const handleLoad = () => {
-                // Remove listeners imediatamente
                 document.removeEventListener('keydown', handleLoad);
-                document.removeEventListener('click', handleLoad);
+                loadingScreen.removeEventListener('click', handleLoad);
                 
-                // Inicia a transição de saída da tela de carregamento (fade-out)
+                toggleFullscreen(); // Tenta entrar em tela cheia
+
                 loadingScreen.style.opacity = '0';
-                
                 setTimeout(() => {
                     loadingScreen.style.display = 'none';
-                    // Revela o conteúdo principal após o fade-out
                     mainContent.style.opacity = '1';
                     mainContent.style.pointerEvents = 'auto';
-                }, 1000); // 1000ms corresponde à duração da transição de opacidade no CSS
+                    mainHeader.classList.add('slide-down-anim');
+                }, 1000);
             };
-            
-            // Adiciona listeners para iniciar o carregamento
+            loadingScreen.addEventListener('click', handleLoad);
             document.addEventListener('keydown', handleLoad);
-            document.addEventListener('click', handleLoad);
         };
     </script>
 </body>
 </html>
-
 
